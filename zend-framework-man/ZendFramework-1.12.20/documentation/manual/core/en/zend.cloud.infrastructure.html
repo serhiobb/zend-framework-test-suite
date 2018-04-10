@@ -1,0 +1,722 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <title>Zend_Cloud_Infrastructure - Zend Framework Manual</title>
+
+</head>
+<body>
+<table width="100%">
+    <tr valign="top">
+        <td width="85%">
+            <table width="100%">
+                <tr>
+                    <td width="25%" style="text-align: left;">
+                    <a href="zend.cloud.storageservice.html">StorageService Introduction</a>
+                    </td>
+
+                    <td width="50%" style="text-align: center;">
+                        <div class="up"><span class="up"><a href="zend.cloud.html">SimpleCloud API: Zend_Cloud</a></span><br />
+                        <span class="home"><a href="manual.html">Programmer's Reference Guide</a></span></div>
+                    </td>
+
+                    <td width="25%" style="text-align: right;">
+                        <div class="next" style="text-align: right; float: right;"><a href="zend.cloud.infrastructure.adapter.html">Zend_Cloud_Infrastructure_Adapter</a></div>
+                    </td>
+                </tr>
+            </table>
+<hr />
+<div id="zend.cloud.infrastructure" class="section"><div class="info"><h1 class="title">Zend_Cloud_Infrastructure</h1></div>
+    
+
+    <div class="section" id="zend.cloud.infrastructure.intro" name="zend.cloud.infrastructure.intro"><div class="info"><h1 class="title">Overview</h1></div>
+        
+
+        <p class="para">
+            The <span class="classname">Zend_Cloud_Infrastructure</span> is a class to manage different
+            cloud computing infrastructures using a common <acronym class="acronym">API</acronym>.
+        </p>
+        
+        <p class="para">
+            In order to provide a common class API for different cloud vendors we implemented 
+            a small set of basic operations for the management of instances (servers) in a cloud infrastructure.
+            These basic operations are:
+        </p>
+
+        <ul class="itemizedlist">
+            <li class="listitem">
+                <p class="para">
+                    <em class="emphasis">create a new instance</em>;
+                </p>
+            </li>               
+            <li class="listitem">
+                <p class="para">
+                    <em class="emphasis">delete a new instance</em>;
+                </p>
+            </li>
+            <li class="listitem">
+                <p class="para">
+                    <em class="emphasis">start/stop an instance</em>;
+                </p>
+            </li>
+            <li class="listitem">
+                <p class="para">
+                    <em class="emphasis">reboot an instance</em>;
+                </p>
+            </li>
+            <li class="listitem">
+                <p class="para">
+                    <em class="emphasis">list of the available instances</em>;
+                </p>
+            </li>
+            <li class="listitem">
+                <p class="para">
+                    <em class="emphasis">get the status of an instance</em>;
+                </p>
+            </li>
+            <li class="listitem">
+                <p class="para">
+                    <em class="emphasis">wait for a status change of an instance</em>;
+                </p>
+            </li>  
+            <li class="listitem">
+                <p class="para">
+                    <em class="emphasis">get the public IP or DNS name of the instance</em>;
+                </p>
+            </li>
+            <li class="listitem">
+                <p class="para">
+                    <em class="emphasis">list all the available images for new instances</em>;
+                </p>
+            </li>
+            <li class="listitem">
+                <p class="para">
+                    <em class="emphasis">list all the available geographical zones for new instances</em>;
+                </p>
+            </li>
+            <li class="listitem">
+                <p class="para">
+                    <em class="emphasis">monitor an instance getting the systems information (CPU%, RAM%, DISK%, NETWORK% usage)</em>;
+                </p>
+            </li>
+            <li class="listitem">
+                <p class="para">
+                    <em class="emphasis">deploy of an instance (run arbitrary shell script on an instance)</em>;
+                </p>
+            </li>
+        </ul> 
+        
+        <blockquote><p><b class="note">Note</b>: <span class="info"><b>Deployment of an instance</b><br /></span>
+            
+
+            
+                For the deploy operations we used the <a href="http://www.php.net/manual/en/book.ssh2.php" class="link external">&raquo; 
+                SSH2 PHP extension (ext/ssh2)</a> to connect on an instance and execute shell script.  The SSH2
+                extensions can be used to connect only to Gnu/Linux instances (servers).
+            <br />
+        </p></blockquote>
+    
+        <p class="para">
+            This class is managed by a factory to initialize specific cloud computing adapters.
+        </p>
+    </div>
+
+    <div class="section" id="zend.cloud.infrastructure.quick-start" name="zend.cloud.infrastructure.quick-start"><div class="info"><h1 class="title">Quick Start</h1></div>
+        
+        
+        <p class="para">
+            To use this class you have to initialize the factory with a specific adapters.  You can
+            check the supported apadters in the specific Chapter <a href="zend.cloud.infrastructure.adapter.html" class="link">Zend_Cloud_Infrastructure_Adapter</a>.
+            We are planning to support other cloud computing vendors very soon.
+        </p>
+        
+        <p class="para">
+            For instance, to work with the AMAZON EC2 adapter you have to initialize the class with
+            following parameters:
+        </p>
+        
+         <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'key'</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$secret</span> = <span style="color: #ff0000;">'secret'</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$region</span> = <span style="color: #ff0000;">'region'</span><span style="color: #ff0000;">'Zend_Cloud_Infrastructure_Adapter_Ec2'</span</div></li></ol></div></div></div>
+
+        
+        <p class="para">
+            <span class="classname">Zend_Cloud_Infrastructure</span> has only a couple of methods that are vendor specific.
+            These methods are the creation of a new instance and the monitoring of an instance.
+            For instance, below is reported an example that shows how to create a new instance using the Amazon EC2 adapter:
+        </p>
+
+        <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'imageId'</span>&nbsp; &nbsp; &nbsp; =&gt; <span style="color: #ff0000;">'your-image-id'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #ff0000;">'instanceType'</span> =&gt; <span style="color: #ff0000;">'your-instance-type'</span><span style="color: #ff0000;">'name of the instance'</span><span style="color: #ff0000;">&quot;Name of the instance: %s<span style="color: #000099; font-weight: bold;">\n</span>&quot;</span><span style="color: #ff0000;">&quot;ID of the instance&nbsp; : %s<span style="color: #000099; font-weight: bold;">\n</span>&quot;</span</div></li></ol></div></div></div>
+
+            
+        <p class="para">
+            The interface of the  <span class="methodname">createInstance</span> is always the same, only
+            the content of <em class="emphasis">$param</em> is specific to the adapter.  for more
+            information about the adapter supported by Zend_Cloud_Infrastructure go to the specific
+            <a href="zend.cloud.infrastructure.adapter.html" class="link">page of the manual</a>.
+        </p>
+        
+        <p class="para">
+            The <span class="classname">Zend_Cloud_Infrastructure</span> uses the classes
+            <span class="classname">Zend_Cloud_Infrastructure_Instance</span> and
+            <span class="classname">Zend_Cloud_Infrastructure_Image</span> to manage the instances (servers)
+            and the images of an instance. 
+        </p>
+    </div>
+ 
+    <div class="section" id="zend.cloud.infrastructure.methods" name="zend.cloud.infrastructure.methods"><div class="info"><h1 class="title">Available Methods</h1></div>
+        
+ 
+        <dl>
+
+            <dt id="zend.cloud.infrastructure.methods.create-instance">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">createInstance</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $name, array $options</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Create an instance.
+                        The return value is an instance of <span class="classname">Zend_Cloud_Infrastructure_Instance</span>.
+                        In case of error the return is <em class="emphasis">false</em>.
+                    </p>
+                    <p class="para">
+                        <em class="emphasis">$name</em> is the name of the instance to create
+                    </p>
+                    <p class="para">
+                        <em class="emphasis">$options</em> is the array contains the specific parameter for the cloud adapter.
+                        For more info read the Chapter of <a href="zend.cloud.infrastructure.adapter.html" class="link">Zend_Cloud_Infrastructure_Adapter</a>.
+                    </p>
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.cloud.infrastructure.methods.deploy-instance">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">deployInstance</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $id, array $param, string|array $cmd</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Run arbitrary shell scripts on an instance.
+                        Return a string or an array contains all the standard output (errors included) of the scripts executed in the instance.
+                        <blockquote><p><b class="note">Note</b>: <span class="info"><b>Requirement</b><br /></span>
+                            
+                            
+                                In order to use the deployInstance method you have to install the SSH2 extension (ext/ssh2) of PHP.
+                                The SSH2 extensions can be used to connect only to Gnu/Linux instances (servers).
+                                For more info about the SSH2 extension, <a href="http://www.php.net/manual/en/book.ssh2.php" class="link external">&raquo; click here</a>.
+                            <br />
+                        </p></blockquote>
+                    </p>
+                    <p class="para">
+                        <em class="emphasis">$id</em> is the ID of the instance
+                    </p>    
+                    <p class="para">
+                        <em class="emphasis">$param</em> is an array contains the username and the password to be used for the SSH connection.
+                        The username and the password must be specified using the following constants key of the <span class="classname">Zend_Cloud_Infrastructure_Instance</span>: 
+                        SSH_USERNAME, SSH_PASSWORD.
+                    </p> 
+                    <p class="para">
+                        <em class="emphasis">$cmd</em> is a string (or an array) contains the commands line to be executed in the instance.
+                    </p> 
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.cloud.infrastructure.methods.destroy-instance">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">destroyInstance</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $id</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Destroy an instance.
+                        Return <em class="emphasis">true</em> in case of success, <em class="emphasis">false</em> in case of error.
+                    </p>
+                    <p class="para">
+                        <em class="emphasis">$id</em> is the ID of the instance
+                    </p>    
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.cloud.infrastructure.methods.get-adapter">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">getAdapter</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams"/>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Return the adapter object.
+                    </p>    
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.cloud.infrastructure.methods.get-adapter-result">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">getAdapterResult</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams"/>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Return the original adapter result.
+                    </p>    
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.cloud.infrastructure.methods.get-last-http-request">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">getLastHttpRequest</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams"/>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Return the last HTTP Request of the adapter.
+                    </p>    
+                </dd>
+
+            </dt>
+
+            
+             <dt id="zend.cloud.infrastructure.methods.get-last-http-response">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">getLastHttpResponse</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams"/>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Return the last HTTP Response of the adapter.
+                    </p>    
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.cloud.infrastructure.methods.images-instance">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">imagesInstance</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams"/>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Return all the available images to use for an instance.
+                        The return value is an instance of <span class="classname">Zend_Cloud_Infrastructure_ImageList</span>
+                    </p>
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.cloud.infrastructure.methods.list-instances">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">listInstances</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams"/>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Return the list of of the available instances. 
+                        The return is an instance of <span class="classname">Zend_Cloud_Infrastructure_InstanceList</span>.
+                    </p>
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.cloud.infrastructure.methods.monitor-instance">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">monitorInstance</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $id,string $metric,array $options=null</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Monitor an instance. Return the system information about the metric of an instance.
+                        The return value is an array that contains samples of values, timestamp and the elaboration of the average value.
+                    </p>
+                    <p class="para">
+                        <em class="emphasis">$id</em> is the ID of the instance;
+                    </p>
+                    <p class="para">
+                        <em class="emphasis">$metric</em> is the metric to be monitored. The allowed metrics are reported as contants of the
+                        <span class="classname">Zend_Cloud_Infrastructure_Instance</span> class: MONITOR_CPU, MONITOR_RAM,
+                        MONITOR_NETWORK_IN, MONITOR_NETWORK_OUT, MONITOR_DISK, MONITOR_DISK_WRITE, MONITOR_DISK_READ.                       
+                    </p>
+                    <p class="para">
+                        <em class="emphasis">$options</em> is the optional array contains the adapter specific options.
+                    </p>
+                </dd>
+
+            </dt>
+
+            
+             <dt id="zend.cloud.infrastructure.methods.public-dns-instance">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">publicDnsInstance</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $id</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Return the public DNS name or the IP address of the instance. The return value is a string.
+                        In case of error the return is <em class="emphasis">false</em>.
+                    </p>
+                    <p class="para">
+                        <em class="emphasis">$id</em> is the ID of the instance
+                    </p>    
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.cloud.infrastructure.methods.reboot-instance">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">rebootInstance</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $id</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Reboot an instance. 
+                        Return <em class="emphasis">true</em> in case of success, <em class="emphasis">false</em> in case of error.
+                    </p>
+                    <p class="para">
+                        <em class="emphasis">$id</em> is the ID of the instance
+                    </p>    
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.cloud.infrastructure.methods.start-instance">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">startInstance</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $id</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Start an instance.
+                        Return <em class="emphasis">true</em> in case of success, <em class="emphasis">false</em> in case of error.
+                    </p>
+                    <p class="para">
+                        <em class="emphasis">$id</em> is the ID of the instance
+                    </p>    
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.cloud.infrastructure.methods.status-instance">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">statusInstance</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $id</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Get the status of an instance. The return value is a string. 
+                        The available status are reported in the following constants of the class <span class="classname">Zend_Cloud_Infrastructure_Instance</span>:
+                        STATUS_STOPPED, STATUS_RUNNING, STATUS_SHUTTING_DOWN, STATUS_REBOOTING,
+                        STATUS_TERMINATED, STATUS_PENDING, STATUS_REBUILD.
+                        In case of error the return is <em class="emphasis">false</em>.
+                    </p>
+                    <p class="para">
+                        <em class="emphasis">$id</em> is the ID of the instance
+                    </p>    
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.cloud.infrastructure.methods.stop-instance">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">stopInstance</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $id</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Stop an instance.
+                        Return <em class="emphasis">true</em> in case of success, <em class="emphasis">false</em> in case of error.
+                    </p>
+                    <p class="para">
+                        <em class="emphasis">$id</em> is the ID of the instance
+                    </p>    
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.cloud.infrastructure.methods.wait-status-instance">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">waitStatusInstance</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $id, string $status,integer $timeout=30</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Wait the status change of an instance for a maximum time of <em class="emphasis">n</em> seconds.
+                        Return <em class="emphasis">true</em> if the status changes as expected, <em class="emphasis">false</em> if not.
+                    </p>
+                    <p class="para">
+                        <em class="emphasis">$id</em> is the ID of the instance;
+                    </p>    
+                    <p class="para">
+                        <em class="emphasis">$status</em> is the status to wait for;
+                    </p>
+                    <p class="para">
+                        <em class="emphasis">$timeout</em> is the maximum time, in seconds, to wait for the status change. This parametr is optional and the default value is 30 seconds.
+                    </p>
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.cloud.infrastructure.methods.zones-instance">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">zonesInstance</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams"/>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Return all the available zones for an instance.
+                        The return value is an array.
+                    </p>
+                </dd>
+
+            </dt>
+
+        </dl>
+
+    </div>
+ 
+    <div class="section" id="zend.cloud.infrastructure.examples" name="zend.cloud.infrastructure.examples"><div class="info"><h1 class="title">Examples</h1></div>
+        
+        
+        <div class="example"><div class="info"><p><b>Example #1 Get the datetime system information of an instance</b></p></div>
+            
+            
+            <div class="example-contents"><p>Get the result of the <em class="emphasis">date</em> command line.</p></div>
+ 
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'username'</span><span style="color: #ff0000;">'password'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$cmd</span>&nbsp; &nbsp; = <span style="color: #ff0000;">'date'</span><span style="color: #ff0000;">'instance-id'</span</div></li></ol></div></div></div>
+
+        </div>
+        
+        <div class="example"><div class="info"><p><b>Example #2 Get the datetime system information of an instance</b></p></div>
+            
+ 
+            <div class="example-contents"><p>Get the result of the <em class="emphasis">date</em> command line.</p></div>
+ 
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'username'</span><span style="color: #ff0000;">'password'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$cmd</span>&nbsp; &nbsp; = <span style="color: #ff0000;">'date'</span><span style="color: #ff0000;">'instance-id'</span</div></li></ol></div></div></div>
+
+        </div>
+        
+        <div class="example"><div class="info"><p><b>Example #3 Reboot an instance and wait for the running status</b></p></div>
+            
+ 
+            <div class="example-contents"><p>Reboot an instance and wait 60 seconds for the running status.</p></div>
+ 
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'instance-id'</span><span style="color: #ff0000;">'Error in the execution of the reboot command'</span><span style="color: #ff0000;">'Reboot command executed successfully'</span><span style="color: #ff0000;">'instance-id'</span><span style="color: #ff0000;">'The instance is ready'</span><span style="color: #ff0000;">'The instance is not ready yet'</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#125;</span></div></li></ol></div></div></div>
+
+        </div>
+    </div>
+</div>
+        <hr />
+
+            <table width="100%">
+                <tr>
+                    <td width="25%" style="text-align: left;">
+                    <a href="zend.cloud.storageservice.html">StorageService Introduction</a>
+                    </td>
+
+                    <td width="50%" style="text-align: center;">
+                        <div class="up"><span class="up"><a href="zend.cloud.html">SimpleCloud API: Zend_Cloud</a></span><br />
+                        <span class="home"><a href="manual.html">Programmer's Reference Guide</a></span></div>
+                    </td>
+
+                    <td width="25%" style="text-align: right;">
+                        <div class="next" style="text-align: right; float: right;"><a href="zend.cloud.infrastructure.adapter.html">Zend_Cloud_Infrastructure_Adapter</a></div>
+                    </td>
+                </tr>
+            </table>
+</td>
+        <td style="font-size: smaller;" width="15%"> <style type="text/css">
+#leftbar {
+	float: left;
+	width: 186px;
+	padding: 5px;
+	font-size: smaller;
+}
+ul.toc {
+	margin: 0px 5px 5px 5px;
+	padding: 0px;
+}
+ul.toc li {
+	font-size: 85%;
+	margin: 1px 0 1px 1px;
+	padding: 1px 0 1px 11px;
+	list-style-type: none;
+	background-repeat: no-repeat;
+	background-position: center left;
+}
+ul.toc li.header {
+	font-size: 115%;
+	padding: 5px 0px 5px 11px;
+	border-bottom: 1px solid #cccccc;
+	margin-bottom: 5px;
+}
+ul.toc li.active {
+	font-weight: bold;
+}
+ul.toc li a {
+	text-decoration: none;
+}
+ul.toc li a:hover {
+	text-decoration: underline;
+}
+</style>
+ <ul class="toc">
+  <li class="header home"><a href="manual.html">Programmer's Reference Guide</a></li>
+  <li class="header up"><a href="manual.html">Programmer's Reference Guide</a></li>
+  <li class="header up"><a href="reference.html">Zend Framework Reference</a></li>
+  <li class="header up"><a href="zend.cloud.html">SimpleCloud API: Zend_Cloud</a></li>
+  <li><a href="zend.cloud.documentservice.html">Document Service Introduction</a></li>
+  <li><a href="zend.cloud.queueservice.html">Queue Service Introduction</a></li>
+  <li><a href="zend.cloud.storageservice.html">StorageService Introduction</a></li>
+  <li class="active"><a href="zend.cloud.infrastructure.html">Zend_Cloud_Infrastructure</a></li>
+  <li><a href="zend.cloud.infrastructure.adapter.html">Zend_Cloud_Infrastructure_Adapter</a></li>
+ </ul>
+ </td>
+    </tr>
+</table>
+</body>
+</html>

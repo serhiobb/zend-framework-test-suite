@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <title>Zend_Mobile_Push_Mpns - Zend Framework Manual</title>
+
+</head>
+<body>
+<table width="100%">
+    <tr valign="top">
+        <td width="85%">
+            <table width="100%">
+                <tr>
+                    <td width="25%" style="text-align: left;">
+                    <a href="zend.mobile.push.gcm.html">Zend_Mobile_Push_Gcm</a>
+                    </td>
+
+                    <td width="50%" style="text-align: center;">
+                        <div class="up"><span class="up"><a href="zend.mobile.push.html">Zend_Mobile_Push</a></span><br />
+                        <span class="home"><a href="manual.html">Programmer's Reference Guide</a></span></div>
+                    </td>
+
+                    <td width="25%" style="text-align: right;">
+                        <div class="next" style="text-align: right; float: right;"><a href="zend.navigation.html">Zend_Navigation</a></div>
+                    </td>
+                </tr>
+            </table>
+<hr />
+<div id="zend.mobile.push.mpns" class="section"><div class="info"><h1 class="title">Zend_Mobile_Push_Mpns</h1></div>
+    
+
+    <p class="para">
+        <span class="classname">Zend_Mobile_Push_Mpns</span> provides the ability to
+        send push notifications to Windows Phone.  MPNS allows the sending of
+        3 different types of notifications; which common behavior is in the
+        <span class="classname">Zend_Mobile_Push_Message_Mpns</span> base.  Followed by
+        specific classes for Raw, Toast and Tile notifications.
+    </p>
+
+    <div class="section" id="zend.mobile.push.mpns.server" name="zend.mobile.push.mpns.server"><div class="info"><h1 class="title">Pushing Messages</h1></div>
+        
+
+        <blockquote><p><b class="note">Note</b>: 
+            Prior to pushing messages; you must implement the practices
+                outlined on <a href="http://msdn.microsoft.com/en-us/library/hh202940(v=VS.92).aspx" class="link external">&raquo; Receiving
+                Push Notifications for Windows Phone</a>. 
+            <br />
+        </p></blockquote>
+
+        <p class="para">
+            When implementing MPNS; you have several components that
+            you will utilize.  <span class="classname">Zend_Mobile_Push_Mpns</span>
+            which contains the server components and
+            <span class="classname">Zend_Mobile_Push_Message_Mpns_Raw</span> which
+            allows you to send <a href="http://msdn.microsoft.com/en-us/library/hh202977(v=VS.92).aspx" class="link external">&raquo; raw
+            notifications</a>,
+            <span class="classname">Zend_Mobile_Push_Message_Mpns_Toast</span> which
+            allows you to send <a href="http://msdn.microsoft.com/en-us/library/hh202967(v=VS.92).aspx" class="link external">&raquo; toast
+            notifications</a>, and
+            <span class="classname">Zend_Mobile_Push_Message_Mpns_Tile</span> which
+            allows you to send <a href="http://msdn.microsoft.com/en-us/library/hh202970(v=VS.92).aspx" class="link external">&raquo; tile
+            notifications</a>.  Each message sent must do an HTTP request;
+            so remember this when sending in large batches.
+        </p>
+
+        <p class="para">
+            The actual implementation of the code is fairly minimal; however,
+            considerations to error handling must be taken.
+        </p>
+
+        <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #808080; font-style: italic;">// raw notification</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #ff0000;">'http://sn1.notify.live.net/throttledthirdparty/01.00/THETOKEN'</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$message</span>-&gt;<span style="color: #006600;">setMessage</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'&lt;notification&gt;&lt;foo id=&quot;bar&quot; /&gt;&lt;/notification&gt;'</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$messages</span><span style="color: #66cc66;">&#91;</span><span style="color: #66cc66;">&#93;</span> = <span style="color: #0000ff;">$message</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// toast message</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #ff0000;">'http://sn1.notify.live.net/throttledthirdparty/01.00/THETOKEN'</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$message</span>-&gt;<span style="color: #006600;">setTitle</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'Foo'</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$message</span>-&gt;<span style="color: #006600;">setMessage</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'Bar'</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$messages</span><span style="color: #66cc66;">&#91;</span><span style="color: #66cc66;">&#93;</span> = <span style="color: #0000ff;">$message</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// tile message</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #ff0000;">'http://sn1.notify.live.net/throttledthirdparty/01.00/THETOKEN'</span><span style="color: #ff0000;">'foo.bar'</span><span style="color: #ff0000;">'Bar Foo'</span><span style="color: #ff0000;">'Remove token: '</span><span style="color: #ff0000;">'Error occurred, token: '</span> . <span style="color: #0000ff;">$m</span>-&gt;<span style="color: #006600;">getToken</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span> . <span style="color: #ff0000;">' - '</span</div></li></ol></div></div></div>
+
+
+        <table class="doctable table"><div class="info"><caption><b>Exceptions and Remediation Techniques</b></caption></div>
+            
+            
+                <thead valign="middle">
+                    <tr valign="middle">
+                        <th>Exception</th>
+                        <th>Meaning</th>
+                        <th>Handling</th>
+                    </tr>
+
+                </thead>
+
+                <tbody valign="middle" class="tbody">
+                    <tr valign="middle">
+                        <td align="left">Zend_Mobile_Push_Exception</td>
+                        <td align="left">These types of exceptions are more generic in nature
+                        and are thrown either from MPNS or internally on input
+                        validation</td>
+                        <td align="left">Read the message and determine remediation steps.</td>
+                    </tr>
+
+                    <tr valign="middle">
+                        <td align="left">Zend_Mobile_Push_Exception_DeviceQuotaExceeded</td>
+                        <td align="left">You have sent too many messages to this device;
+                            you may retry again later.</td>
+                        <td align="left">Try again later or implement <a href="http://en.wikipedia.org/wiki/Exponential_backoff" class="link external">&raquo; 
+                            Exponential Backoff
+                        </a>.</td>
+                    </tr>
+
+                    <tr valign="middle">
+                        <td align="left">Zend_Mobile_Push_Exception_InvalidPayload</td>
+                        <td align="left">Generally the payload will not throw an exception
+                        unless the size of the payload is too large or it is missing
+                        required content.</td>
+                        <td align="left">Check the size of the payload is within the
+                        requirements of MPNS</td>
+                    </tr>
+
+                    <tr valign="middle">
+                        <td align="left">Zend_Mobile_Push_Exception_InvalidToken</td>
+                        <td align="left">Any form of an invalid token will be if the
+                            device is no longer subscribed, inactive or not
+                            valid.</td>
+                        <td align="left">In some cases you may attempt to resend in an
+                            hour; this will be stated in the exception.
+                            Otherwise you will want to remove the token from
+                            being sent to again.</td>
+                    </tr>
+
+                    <tr valign="middle">
+                        <td align="left">Zend_Mobile_Push_Exception_QuotaExceeded</td>
+                        <td align="left">You have reached the per-day throttling.</td>
+                        <td align="left">Per-day throttling is only on unauthenticated web
+                        services; you will need to <a href="http://msdn.microsoft.com/en-us/library/ff941099(v=vs.92).aspx" class="link external">&raquo; register
+                        your application for notifications</a>.</td>
+                    </tr>
+
+                </tbody>
+            
+        </table>
+
+    </div>
+
+    <div class="section" id="zend.mobile.push.mpns.message" name="zend.mobile.push.mpns.message"><div class="info"><h1 class="title">Advanced Messages</h1></div>
+
+        
+
+        <p class="para">
+            MPNS provides the ability for sending more advanced messages; for
+            instance the examples above show the most basic implementation of a
+            message.  Zend_Mobile_Push_Message_Mpns_* allows you to do far more
+            advanced messaging outlined below.
+        </p>
+
+        <div class="section" id="zend.mobile.push.mpns.message.tile" name="zend.mobile.push.mpns.message.tile"><div class="info"><h1 class="title">Tile Messages</h1></div>
+
+            
+
+            <p class="para">
+                Tile messages have additional optional attributes for Windows
+                Phone 7.1+; you must ensure that you are sending to a device
+                with the proper version otherwise your notification will fail.
+            </p>
+
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'http://sn1.notify.live.net/throttledthirdparty/01.00/THETOKEN'</span><span style="color: #66cc66;">&#41;</span>; <span style="color: #808080; font-style: italic;">// REPLACE WITH NOTIFICATION URI FROM MPNS</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #ff0000;">'foo.jpg'</span><span style="color: #ff0000;">'Bar'</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// other optional attributes for wp7.1+</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$message</span>-&gt;<span style="color: #006600;">setTileId</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'/Foo.xaml'</span><span style="color: #ff0000;">'blue.jpg'</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$message</span>-&gt;<span style="color: #006600;">setBackTitle</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'Bar'</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$message</span>-&gt;<span style="color: #006600;">setBackContent</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'Foo Bar'</span><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+
+        </div>
+
+        <div class="section" id="zend.mobile.push.mpns.message.toast" name="zend.mobile.push.mpns.message.toast"><div class="info"><h1 class="title">Toast Messages</h1></div>
+
+            
+
+            <p class="para">
+                Toast messages have additional optional attributes for Windows
+                Phone 7.1+; you must ensure that you are sending to a device
+                with the proper version otherwise your notification will fail.
+            </p>
+
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'http://sn1.notify.live.net/throttledthirdparty/01.00/THETOKEN'</span><span style="color: #66cc66;">&#41;</span>; <span style="color: #808080; font-style: italic;">// REPLACE WITH NOTIFICATION URI FROM MPNS</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$message</span>-&gt;<span style="color: #006600;">setTitle</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'Foo'</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$message</span>-&gt;<span style="color: #006600;">setMessage</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'Bar'</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// optional attributes for wp7.1+</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$message</span>-&gt;<span style="color: #006600;">setParams</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'?bar=foo'</span><span style="color: #66cc66;">&#41;</span>; <span style="color: #808080; font-style: italic;">//optional parameters</span></div></li></ol></div></div></div>
+
+
+        </div>
+    </div>
+</div>
+        <hr />
+
+            <table width="100%">
+                <tr>
+                    <td width="25%" style="text-align: left;">
+                    <a href="zend.mobile.push.gcm.html">Zend_Mobile_Push_Gcm</a>
+                    </td>
+
+                    <td width="50%" style="text-align: center;">
+                        <div class="up"><span class="up"><a href="zend.mobile.push.html">Zend_Mobile_Push</a></span><br />
+                        <span class="home"><a href="manual.html">Programmer's Reference Guide</a></span></div>
+                    </td>
+
+                    <td width="25%" style="text-align: right;">
+                        <div class="next" style="text-align: right; float: right;"><a href="zend.navigation.html">Zend_Navigation</a></div>
+                    </td>
+                </tr>
+            </table>
+</td>
+        <td style="font-size: smaller;" width="15%"> <style type="text/css">
+#leftbar {
+	float: left;
+	width: 186px;
+	padding: 5px;
+	font-size: smaller;
+}
+ul.toc {
+	margin: 0px 5px 5px 5px;
+	padding: 0px;
+}
+ul.toc li {
+	font-size: 85%;
+	margin: 1px 0 1px 1px;
+	padding: 1px 0 1px 11px;
+	list-style-type: none;
+	background-repeat: no-repeat;
+	background-position: center left;
+}
+ul.toc li.header {
+	font-size: 115%;
+	padding: 5px 0px 5px 11px;
+	border-bottom: 1px solid #cccccc;
+	margin-bottom: 5px;
+}
+ul.toc li.active {
+	font-weight: bold;
+}
+ul.toc li a {
+	text-decoration: none;
+}
+ul.toc li a:hover {
+	text-decoration: underline;
+}
+</style>
+ <ul class="toc">
+  <li class="header home"><a href="manual.html">Programmer's Reference Guide</a></li>
+  <li class="header up"><a href="manual.html">Programmer's Reference Guide</a></li>
+  <li class="header up"><a href="reference.html">Zend Framework Reference</a></li>
+  <li class="header up"><a href="zend.mobile.push.html">Zend_Mobile_Push</a></li>
+  <li><a href="zend.mobile.push.introduction.html">Zend_Mobile_Push Introduction</a></li>
+  <li><a href="zend.mobile.push.apns.html">Zend_Mobile_Push_Apns</a></li>
+  <li><a href="zend.mobile.push.gcm.html">Zend_Mobile_Push_Gcm</a></li>
+  <li class="active"><a href="zend.mobile.push.mpns.html">Zend_Mobile_Push_Mpns</a></li>
+ </ul>
+ </td>
+    </tr>
+</table>
+</body>
+</html>

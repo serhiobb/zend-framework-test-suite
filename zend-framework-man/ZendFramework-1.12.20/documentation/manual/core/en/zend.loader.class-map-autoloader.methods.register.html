@@ -1,0 +1,268 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <title>Register with spl_autoload. - Zend Framework Manual</title>
+
+</head>
+<body>
+<table width="100%">
+    <tr valign="top">
+        <td width="85%">
+            <table width="100%">
+                <tr>
+                    <td width="25%" style="text-align: left;">
+                    <a href="zend.loader.class-map-autoloader.methods.autoload.html">autoload</a>
+                    </td>
+
+                    <td width="50%" style="text-align: center;">
+                        <div class="up"><span class="up"><a href="zend.loader.class-map-autoloader.html">The ClassMapAutoloader</a></span><br />
+                        <span class="home"><a href="manual.html">Programmer's Reference Guide</a></span></div>
+                    </td>
+
+                    <td width="25%" style="text-align: right;">
+                        <div class="next" style="text-align: right; float: right;"><a href="zend.loader.classmap-generator.html">The Class Map Generator utility: bin/classmap_generator.php</a></div>
+                    </td>
+                </tr>
+            </table>
+<hr />
+<div id="zend.loader.class-map-autoloader" class="section"><div class="info"><h1 class="title">The ClassMapAutoloader</h1></div>
+    
+    
+    <div class="section" id="zend.loader.class-map-autoloader.intro" name="zend.loader.class-map-autoloader.intro"><div class="info"><h1 class="title">Overview</h1></div>
+        
+
+        <p class="para">
+            The <span class="classname">ClassMapAutoloader</span> is designed with performance in mind. The
+            idea behind it is simple: when asked to load a class, see if it&#039;s in the map, and, if
+            so, load the file associated with the class in the map. This avoids unnecessary
+            filesystem operations, and can also ensure the autoloader &quot;plays nice&quot; with opcode
+            caches and PHP&#039;s realpath cache.
+        </p>
+
+        <p class="para">
+            In order to use the <span class="classname">ClassMapAutoloader</span>, you first need class
+            maps. Zend Framework also provides a tool for generating these class maps; you can find it in
+            <var class="filename">bin/classmap_generator.php</var> of the distribution. Full documentation
+            of this too is provided in <a href="zend.loader.classmap-generator.html" class="xref">The Class Map Generator utility: bin/classmap_generator.php</a>.
+        </p>
+    </div>
+
+    <div class="section" id="zend.loader.class-map-autoloader.quick-start" name="zend.loader.class-map-autoloader.quick-start"><div class="info"><h1 class="title">Quick Start</h1></div>
+        
+
+        <p class="para">
+            The first step is to generate a class map file. You may run this over any directory
+            containing source code anywhere underneath it.
+        </p>
+
+        <div class="programlisting sh"><div class="shcode"><div style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">php classmap_generator.php Some/Directory/</div></li></ol></div></div></div>
+
+
+        <p class="para">
+            This will create a file named <var class="filename">Some/Directory/autoload_classmap.php</var>, which
+            is a PHP file returning an associative array that represents the class map.
+        </p>
+
+        <p class="para">
+            Within your code, you will now instantiate the
+            <span class="classname">ClassMapAutoloader</span>, and provide it the location of the map.
+        </p>
+
+        <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// This example assumes ZF is on your include_path.</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// You could also load the autoloader class from a path relative to the</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// current script, or via an absolute path.</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #ff0000;">'Zend/Loader/ClassMapAutoloader.php'</span><span style="color: #808080; font-style: italic;">// Register the class map:</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$loader</span>-&gt;<span style="color: #006600;">registerAutoloadMap</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'Some/Directory/autoload_classmap.php'</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// Register with spl_autoload:</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$loader</span>-&gt;<span style="color: #006600;">register</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+
+        <p class="para">
+            At this point, you may now use any classes referenced in your class map.
+        </p>
+    </div>
+
+    <div class="section" id="zend.loader.class-map-autoloader.options" name="zend.loader.class-map-autoloader.options"><div class="info"><h1 class="title">Configuration Options</h1></div>
+        
+
+        <p class="para">
+            The <span class="classname">ClassMapAutoloader</span> defines the following options.
+        </p>
+
+        <dl>
+<div class="info"><h1 class="title">ClassMapAutoloader Options</h1></div>
+            
+
+            <dt>
+
+                <dt class="term">$options</dt>
+
+                <dd>
+
+                    <p class="para">
+                        The <span class="classname">ClassMapAutoloader</span> expects an array of options,
+                        where each option is either a filename referencing a class map, or an
+                        associative array of class name/filename pairs.
+                    </p>
+
+                    <p class="para">
+                        As an example:
+                    </p>
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// Configuration defining both a file-based class map, and an array map</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #ff0000;">'/library/autoload_classmap.php'</span>, <span style="color: #808080; font-style: italic;">// file-based class map</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// array class map</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #ff0000;">'Application_Bootstrap'</span><span style="color: #ff0000;">'/application/Bootstrap.php'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #ff0000;">'Test_Bootstrap'</span><span style="color: #ff0000;">'/tests/Bootstrap.php'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #66cc66;">&#41;</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+                </dd>
+
+            </dt>
+
+        </dl>
+
+    </div>
+
+    <div class="section" id="zend.loader.class-map-autoloader.methods" name="zend.loader.class-map-autoloader.methods"><div class="info"><h1 class="title">Available Methods</h1></div>
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    </div>
+
+    <div class="section" id="zend.loader.class-map-autoloader.examples" name="zend.loader.class-map-autoloader.examples"><div class="info"><h1 class="title">Examples</h1></div>
+        
+
+        <div class="example"><div class="info"><p><b>Example #1 Using configuration to seed ClassMapAutoloader</b></p></div>
+            
+
+            <div class="example-contents"><p>
+                Often, you will want to configure your <span class="classname">ClassMapAutoloader</span>.
+                These values may come from a configuration file, a cache (such as ShMem or
+                memcached), or a simple PHP array. The following is an example of a PHP array that
+                could be used to configure the autoloader:
+            </p></div>
+
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// Configuration defining both a file-based class map, and an array map</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #ff0000;">'/../library/autoload_classmap.php'</span>, <span style="color: #808080; font-style: italic;">// file-based class map</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// array class map</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #ff0000;">'Application_Bootstrap'</span><span style="color: #ff0000;">'/Bootstrap.php'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #ff0000;">'Test_Bootstrap'</span><span style="color: #ff0000;">'/../tests/Bootstrap.php'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #66cc66;">&#41;</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+            
+            <div class="example-contents"><p>
+                An eqivalent INI style configuration might look like this:
+            </p></div>
+
+            <div class="programlisting ini"><div class="inicode"><div class="ini" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">classmap.<span style="color: #000099;">library </span>=<span style="color: #660066;"> APPLICATION_PATH </span><span style="color: #933;">&quot;/../library/autoload_classmap.php&quot;</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">classmap.resources.<span style="color: #000099;">Application_Bootstrap </span>=<span style="color: #660066;"> APPLICATION_PATH </span><span style="color: #933;">&quot;/Bootstrap.php&quot;</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">classmap.resources.<span style="color: #000099;">Test_Bootstrap </span>=<span style="color: #660066;"> APPLICATION_PATH </span><span style="color: #933;">&quot;/../tests/Bootstrap.php&quot;</span></div></li></ol></div></div></div>
+
+
+            <div class="example-contents"><p>
+                Once you have your configuration, you can pass it either to the constructor of the
+                <span class="classname">ClassMapAutoloader</span>, to its
+                 <span class="methodname">setOptions()</span> method, or to
+                 <span class="methodname">registerAutoloadMaps()</span>.
+            </p></div>
+
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">/* The following are all equivalent */</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// To the constructor:</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// To setOptions():</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// To registerAutoloadMaps():</span></div></li></ol></div></div></div>
+
+        </div>
+    </div>
+</div>
+        <hr />
+
+            <table width="100%">
+                <tr>
+                    <td width="25%" style="text-align: left;">
+                    <a href="zend.loader.class-map-autoloader.methods.autoload.html">autoload</a>
+                    </td>
+
+                    <td width="50%" style="text-align: center;">
+                        <div class="up"><span class="up"><a href="zend.loader.class-map-autoloader.html">The ClassMapAutoloader</a></span><br />
+                        <span class="home"><a href="manual.html">Programmer's Reference Guide</a></span></div>
+                    </td>
+
+                    <td width="25%" style="text-align: right;">
+                        <div class="next" style="text-align: right; float: right;"><a href="zend.loader.classmap-generator.html">The Class Map Generator utility: bin/classmap_generator.php</a></div>
+                    </td>
+                </tr>
+            </table>
+</td>
+        <td style="font-size: smaller;" width="15%"> <style type="text/css">
+#leftbar {
+	float: left;
+	width: 186px;
+	padding: 5px;
+	font-size: smaller;
+}
+ul.toc {
+	margin: 0px 5px 5px 5px;
+	padding: 0px;
+}
+ul.toc li {
+	font-size: 85%;
+	margin: 1px 0 1px 1px;
+	padding: 1px 0 1px 11px;
+	list-style-type: none;
+	background-repeat: no-repeat;
+	background-position: center left;
+}
+ul.toc li.header {
+	font-size: 115%;
+	padding: 5px 0px 5px 11px;
+	border-bottom: 1px solid #cccccc;
+	margin-bottom: 5px;
+}
+ul.toc li.active {
+	font-weight: bold;
+}
+ul.toc li a {
+	text-decoration: none;
+}
+ul.toc li a:hover {
+	text-decoration: underline;
+}
+</style>
+ <ul class="toc">
+  <li class="header home"><a href="manual.html">Programmer's Reference Guide</a></li>
+  <li class="header up"><a href="manual.html">Programmer's Reference Guide</a></li>
+  <li class="header up"><a href="reference.html">Zend Framework Reference</a></li>
+  <li class="header up"><a href="zend.loader.html">Zend_Loader</a></li>
+  <li class="header up"><a href="zend.loader.class-map-autoloader.html">The ClassMapAutoloader</a></li>
+  <li><a href="zend.loader.class-map-autoloader.methods.constructor.html">__construct</a></li>
+  <li><a href="zend.loader.class-map-autoloader.methods.set-options.html">setOptions</a></li>
+  <li><a href="zend.loader.class-map-autoloader.methods.register-autoload-map.html">registerAutoloadMap</a></li>
+  <li><a href="zend.loader.class-map-autoloader.methods.register-autoload-maps.html">registerAutoloadMaps</a></li>
+  <li><a href="zend.loader.class-map-autoloader.methods.get-autoload-map.html">getAutoloadMap</a></li>
+  <li><a href="zend.loader.class-map-autoloader.methods.autoload.html">autoload</a></li>
+  <li class="active"><a href="zend.loader.class-map-autoloader.methods.register.html">register</a></li>
+ </ul>
+ </td>
+    </tr>
+</table>
+</body>
+</html>

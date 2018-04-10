@@ -1,0 +1,842 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <title>The EventManager - Zend Framework Manual</title>
+
+</head>
+<body>
+<table width="100%">
+    <tr valign="top">
+        <td width="85%">
+            <table width="100%">
+                <tr>
+                    <td width="25%" style="text-align: left;">
+                    <a href="zend.event-manager.html">Zend_EventManager</a>
+                    </td>
+
+                    <td width="50%" style="text-align: center;">
+                        <div class="up"><span class="up"><a href="zend.event-manager.html">Zend_EventManager</a></span><br />
+                        <span class="home"><a href="manual.html">Programmer's Reference Guide</a></span></div>
+                    </td>
+
+                    <td width="25%" style="text-align: right;">
+                        <div class="next" style="text-align: right; float: right;"><a href="zend.exception.html">Zend_Exception</a></div>
+                    </td>
+                </tr>
+            </table>
+<hr />
+<div id="zend.event-manager.event-manager" class="section"><div class="info"><h1 class="title">The EventManager</h1></div>
+    
+ 
+    <div class="section" id="zend.event-manager.event-manager.intro" name="zend.event-manager.event-manager.intro"><div class="info"><h1 class="title">Overview</h1></div>
+        
+
+        <p class="para">
+            <span class="classname">Zend_EventManager</span> is a component designed for the following use
+            cases:
+        </p>
+
+        <ul class="itemizedlist">
+            <li class="listitem">
+                <p class="para">
+                    Implementing simple subject/observer patterns.
+                </p>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                    Implementing Aspect-Oriented designs.
+                </p>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                    Implementing event-driven architectures.
+                </p>
+            </li>
+        </ul>
+
+        <p class="para">
+            The basic architecture allows you to attach and detach listeners to named events, both on
+            a per-instance basis as well as statically; trigger events; and interrupt execution of
+            listeners.
+        </p>
+    </div>
+ 
+    <div class="section" id="zend.event-manager.event-manager.quick-start" name="zend.event-manager.event-manager.quick-start"><div class="info"><h1 class="title">Quick Start</h1></div>
+        
+
+        <p class="para">
+            Typically, you will compose a <span class="classname">Zend_EventManager_EventManager</span> instance in a class.
+        </p>
+
+        <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li></ol></div></div></div>
+
+
+        <p class="para">
+            The above allows users to access the <span class="classname">EventManager</span> instance, or
+            reset it with a new instance; if one does not exist, it will be lazily instantiated
+            on-demand.
+        </p>
+
+        <p class="para">
+            An <span class="classname">EventManager</span> is really only interesting if it triggers some
+            events. Basic triggering takes three arguments: the event name, which is usually the
+            current function/method name; the &quot;context&quot;, which is usually the current object
+            instance; and the arguments, which are usually the arguments provided to the current
+            function/method.
+        </p>
+
+        <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #808080; font-style: italic;">// ... assume events definition from above</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #ff0000;">'baz'</span>, <span style="color: #ff0000;">'bat'</span</div></li></ol></div></div></div>
+
+
+        <p class="para">
+            In turn, triggering events is only interesting if something is listening for the event.
+            Listeners attach to the <span class="classname">EventManager</span>, specifying a named event
+            and the callback to notify. The callback receives a <span class="classname">Zend_EventManager_Event</span>
+            object, which has accessors for retrieving the event name, context, and parameters.
+            Let&#039;s add a listener, and trigger the event.
+        </p>
+
+        <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'bar'</span><span style="color: #ff0000;">'%s called on %s, using params %s'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #0000ff;">$event</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #0000ff;">$target</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #0000ff;">$params</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #66cc66;">&#41;</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#125;</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// Results in log message:</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$foo</span>-&gt;<span style="color: #006600;">bar</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'baz'</span>, <span style="color: #ff0000;">'bat'</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// reading: bar called on Foo, using params {&quot;baz&quot; : &quot;baz&quot;, &quot;bat&quot; : &quot;bat&quot;}&quot;</span></div></li></ol></div></div></div>
+
+
+        <p class="para">
+            Note that the second argument to  <span class="methodname">attach()</span> is any valid callback;
+            an anonymous function is shown in the example in order to keep the example
+            self-contained. However, you could also utilize a valid function name, a functor, a
+            string referencing a static method, or an array callback with a named static method or
+            instance method. Again, any PHP callback is valid.
+        </p>
+
+        <p class="para">
+            Sometimes you may want to specify listeners without yet having an object instance of the
+            class composing an <span class="classname">EventManager</span>. The
+            <span class="classname">Zend_EventManager_StaticEventManager</span> allows you to do this. The call to
+             <span class="methodname">attach</span> is identical to the <span class="classname">EventManager</span>,
+            but expects an additional parameter at the beginning: a named instance. Remember the
+            example of composing an <span class="classname">EventManager</span>, how we passed it
+            <b><tt>__CLASS__</tt></b>? That value, or any strings you provide in an array to
+            the constructor, may be used to identify an instance when using the
+            <span class="classname">StaticEventManager</span>. As an example, we could change the above
+            example to attach statically:
+        </p>
+
+        <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'Foo'</span>, <span style="color: #ff0000;">'bar'</span><span style="color: #ff0000;">'%s called on %s, using params %s'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #0000ff;">$event</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #0000ff;">$target</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #0000ff;">$params</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #66cc66;">&#41;</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#125;</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// Later, instantiate Foo:</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// And we can still trigger the above event:</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$foo</span>-&gt;<span style="color: #006600;">bar</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'baz'</span>, <span style="color: #ff0000;">'bat'</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// results in log message: </span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// bar called on Foo, using params {&quot;baz&quot; : &quot;baz&quot;, &quot;bat&quot; : &quot;bat&quot;}&quot;</span></div></li></ol></div></div></div>
+
+
+        <p class="para">
+            The <span class="classname">EventManager</span> also provides the ability to detach listeners,
+            short-circuit execution of an event either from within a listener or by testing return
+            values of listeners, test and loop through the results returned by listeners, prioritize
+            listeners, and more. Many of these features are detailed in the examples.
+        </p>
+        
+        <div class="section" id="zend.event-manager.event-manager.quick-start.wildcard" name="zend.event-manager.event-manager.quick-start.wildcard"><div class="info"><h1 class="title">Wildcard Listeners</h1></div>
+            
+
+            <p class="para">
+                Sometimes you&#039;ll want to attach the same listener to many events or to all events of
+                a given instance -- or potentially, with the static manager, many contexts, and many
+                events. The <span class="classname">EventManager</span> component allows for this.
+            </p>
+
+            <div class="example"><div class="info"><p><b>Example #1 Attaching to many events at once</b></p></div>
+                
+
+                <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'these'</span>, <span style="color: #ff0000;">'are'</span>, <span style="color: #ff0000;">'event'</span>, <span style="color: #ff0000;">'names'</span><span style="color: #66cc66;">&#41;</span>, <span style="color: #0000ff;">$callback</span><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+
+                <div class="example-contents"><p>
+                    Note that if you specify a priority, that priority will be used for all events
+                    specified.
+                </p></div>
+            </div>
+
+            <div class="example"><div class="info"><p><b>Example #2 Attaching using the wildcard</b></p></div>
+                
+
+                <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'*'</span>, <span style="color: #0000ff;">$callback</span><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+
+                <div class="example-contents"><p>
+                    Note that if you specify a priority, that priority will be used for this
+                    listener for any event triggered.
+                </p></div>
+
+                <div class="example-contents"><p>
+                    What the above specifies is that <em class="emphasis">any</em> event triggered will
+                    result in notification of this particular listener.
+                </p></div>
+            </div>
+
+            <div class="example"><div class="info"><p><b>Example #3 Attaching to many events at once via the StaticEventManager</b></p></div>
+                
+
+                <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #808080; font-style: italic;">// Attach to many events on the context &quot;foo&quot;</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$events</span>-&gt;<span style="color: #006600;">attach</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'foo'</span><span style="color: #ff0000;">'these'</span>, <span style="color: #ff0000;">'are'</span>, <span style="color: #ff0000;">'event'</span>, <span style="color: #ff0000;">'names'</span><span style="color: #66cc66;">&#41;</span>, <span style="color: #0000ff;">$callback</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// Attach to many events on the contexts &quot;foo&quot; and &quot;bar&quot;</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #ff0000;">'foo'</span>, <span style="color: #ff0000;">'bar'</span><span style="color: #ff0000;">'these'</span>, <span style="color: #ff0000;">'are'</span>, <span style="color: #ff0000;">'event'</span>, <span style="color: #ff0000;">'names'</span><span style="color: #66cc66;">&#41;</span>, <span style="color: #0000ff;">$callback</span><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+
+                <div class="example-contents"><p>
+                    Note that if you specify a priority, that priority will be used for all events
+                    specified.
+                </p></div>
+            </div>
+
+            <div class="example"><div class="info"><p><b>Example #4 Attaching to many events at once via the StaticEventManager</b></p></div>
+                
+
+                <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #808080; font-style: italic;">// Attach to all events on the context &quot;foo&quot;</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$events</span>-&gt;<span style="color: #006600;">attach</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'foo'</span>, <span style="color: #ff0000;">'*'</span>, <span style="color: #0000ff;">$callback</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// Attach to all events on the contexts &quot;foo&quot; and &quot;bar&quot;</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #ff0000;">'foo'</span>, <span style="color: #ff0000;">'bar'</span><span style="color: #66cc66;">&#41;</span>, <span style="color: #ff0000;">'*'</span>, <span style="color: #0000ff;">$callback</span><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+
+                <div class="example-contents"><p>
+                    Note that if you specify a priority, that priority will be used for all events
+                    specified.
+                </p></div>
+
+                <div class="example-contents"><p>
+                    The above is specifying that for the contexts &quot;foo&quot; and &quot;bar&quot;, the specified
+                    listener should be notified for any event they trigger.
+                </p></div>
+            </div>
+        </div>
+    </div>
+ 
+    <div class="section" id="zend.event-manager.event-manager.options" name="zend.event-manager.event-manager.options"><div class="info"><h1 class="title">Configuration Options</h1></div>
+        
+ 
+        <dl>
+<div class="info"><h1 class="title">Zend_EventManager_EventManager Options</h1></div>
+            
+ 
+            <dt>
+
+                <dt class="term">identifier</dt>
+ 
+                <dd>
+
+                    <p class="para">
+                        A string or array of strings to which the given
+                        <span class="classname">EventManager</span> instance can answer when accessed via
+                        the <span class="classname">StaticEventManager</span>.
+                    </p>
+                </dd>
+
+            </dt>
+
+
+            <dt>
+
+                <dt class="term">event_class</dt>
+ 
+                <dd>
+
+                    <p class="para">
+                        The name of an alternate <span class="classname">Zend_EventManager_Event</span> class to use for
+                        representing events passed to listeners.
+                    </p>
+                </dd>
+
+            </dt>
+
+
+            <dt>
+
+                <dt class="term">static_connections</dt>
+ 
+                <dd>
+
+                    <p class="para">
+                        An instance of a <span class="interfacename">Zend_EventManager_StaticEventCollection</span>
+                        instance to use when triggering events. By default, this will use
+                        the global <span class="classname">Zend_EventManager_StaticEventManager</span> instance, but that can
+                        be overridden by passing a value to this method. A <b><tt>null</tt></b>
+                        value will prevent the instance from triggering any further statically
+                        attached listeners.
+                    </p>
+                </dd>
+
+            </dt>
+
+        </dl>
+
+    </div>
+ 
+    <div class="section" id="zend.event-manager.event-manager.methods" name="zend.event-manager.event-manager.methods"><div class="info"><h1 class="title">Available Methods</h1></div>
+        
+ 
+        <dl>
+
+            <dt id="zend.event-manager.event-manager.methods.constructor">
+                <dt class="term">__construct</dt>
+                <dd>
+
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">__construct</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">null|string|int $identifier</code_funcparams>
+                         )</span>
+                    </div>
+
+                    <p class="para">
+                        Constructs a new <span class="classname">EventManager</span> instance, using the
+                        given identifier, if provided, for purposes of static attachment.
+                    </p>
+                </dd>
+
+            </dt>
+
+
+            <dt id="zend.event-manager.event-manager.methods.set-event-class">
+                <dt class="term">setEventClass</dt>
+                <dd>
+
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">setEventClass</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $class</code_funcparams>
+                         )</span>
+                    </div>
+
+                    <p class="para">
+                        Provide the name of an alternate <span class="classname">Zend_EventManager_Event</span> class to use
+                        when creating events to pass to triggered listeners.
+                    </p>
+                </dd>
+
+            </dt>
+
+
+            <dt id="zend.event-manager.event-manager.methods.set-static-connections">
+                <dt class="term">setStaticConnections</dt>
+                <dd>
+
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">setStaticConnections</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">Zend_EventManager_StaticEventCollection $connections = null</code_funcparams>
+                         )</span>
+                    </div>
+
+                    <p class="para">
+                        An instance of a <span class="interfacename">Zend_EventManager_StaticEventCollection</span>
+                        instance to use when triggering events. By default, this will use
+                        the global <span class="classname">Zend_EventManager_StaticEventManager</span> instance, but that can
+                        be overridden by passing a value to this method. A <b><tt>null</tt></b>
+                        value will prevent the instance from triggering any further statically
+                        attached listeners.
+                    </p>
+                </dd>
+
+            </dt>
+
+
+            <dt id="zend.event-manager.event-manager.methods.get-static-connections">
+                <dt class="term">getStaticConnections</dt>
+                <dd>
+
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">getStaticConnections</span>
+                         ( <span class="methodparam">void</span>
+                    </div>
+
+                    <p class="para">
+                        Returns the currently attached
+                        <span class="interfacename">Zend_EventManager_StaticEventCollection</span> instance, lazily
+                        retrieving the global <span class="classname">Zend_EventManager_StaticEventManager</span> instance if
+                        none is attached and usage of static listeners hasn&#039;t been disabled by
+                        passing a <b><tt>null</tt></b> value to <a href="zend.event-manager.event-manager.html#zend.event-manager.event-manager.methods.set-static-connections" class="link">setStaticConnections()</a>.
+                        Returns either a boolean <b><tt>false</tt></b> if static listeners are
+                        disabled, or a <span class="interfacename">StaticEventCollection</span> instance
+                        otherwise.
+                    </p>
+                </dd>
+
+            </dt>
+
+
+            <dt id="zend.event-manager.event-manager.methods.trigger">
+                <dt class="term">trigger</dt>
+                <dd>
+
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">trigger</span>
+
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $event, mixed $target, mixed $argv, callback $callback</code_funcparams>
+                         )</span>
+                    </div>
+
+                    <p class="para">
+                        Triggers all listeners to a named event. The recommendation is to use the
+                        current function/method name for <var class="varname">$event</var>, appending it
+                        with values such as &quot;.pre&quot;, &quot;.post&quot;, etc. as needed.
+                        <var class="varname">$context</var> should be the current object instance, or the
+                        name of the function if not triggering within an object.
+                        <var class="varname">$params</var> should typically be an associative array or
+                        <span class="classname">ArrayAccess</span> instance; we recommend using the
+                        parameters passed to the function/method (<span class="function">compact()</span> is
+                        often useful here). This method can also take a callback and behave in the 
+                        same way as  <span class="methodname">triggerUntil()</span>.
+                    </p>
+
+                    <p class="para">
+                        The method returns an instance of <span class="classname">Zend_EventManager_ResponseCollection</span>,
+                        which may be used to introspect return values of the various listeners, test
+                        for short-circuiting, and more.
+                    </p>
+                </dd>
+
+            </dt>
+
+
+            <dt id="zend.event-manager.event-manager.methods.trigger-until">
+                <dt class="term">triggerUntil</dt>
+                <dd>
+
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">triggerUntil</span>
+
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $event, mixed $context, mixed $argv, callback
+                                $callback</code_funcparams>
+                         )</span>
+                    </div>
+
+                    <p class="para">
+                        Triggers all listeners to a named event, just like <a href="zend.event-manager.event-manager.html#zend.event-manager.event-manager.methods.trigger" class="link">trigger()</a>,
+                        with the addition that it passes the return value from each listener to
+                        <var class="varname">$callback</var>; if <var class="varname">$callback</var> returns a
+                        boolean <b><tt>true</tt></b> value, execution of the listeners is
+                        interrupted. You can test for this using <code class="code">$result-&gt;stopped()</code>.
+                    </p>
+                </dd>
+
+            </dt>
+
+
+            <dt id="zend.event-manager.event-manager.methods.attach">
+                <dt class="term">attach</dt>
+                <dd>
+
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">attach</span>
+
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $event, callback $callback, int $priority</code_funcparams>
+                         )</span>
+                    </div>
+
+                    <p class="para">
+                        Attaches <var class="varname">$callback</var> to the
+                        <span class="classname">Zend_EventManager_EventManager</span> instance, listening for the event
+                        <var class="varname">$event</var>. If a <var class="varname">$priority</var> is provided,
+                        the listener will be inserted into the internal listener stack using that
+                        priority; higher values execute earliest. (Default priority is &quot;1&quot;, and
+                        negative priorities are allowed.)
+                    </p>
+
+                    <p class="para">
+                        The method returns an instance of
+                        <span class="classname">Zend_Stdlib_CallbackHandler</span>; this value can later be
+                        passed to  <span class="methodname">detach()</span> if desired.
+                    </p>
+                </dd>
+
+            </dt>
+
+
+            <dt id="zend.event-manager.event-manager.methods.attach-aggregate">
+                <dt class="term">attachAggregate</dt>
+                <dd>
+
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">attachAggregate</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string|Zend_EventManager_ListenerAggregate $aggregate</code_funcparams>
+                         )</span>
+                    </div>
+
+                    <p class="para">
+                        If a string is passed for <var class="varname">$aggregate</var>, instantiates that
+                        class. The <var class="varname">$aggregate</var> is then passed the
+                        <span class="classname">EventManager</span> instance to its
+                         <span class="methodname">attach()</span> method so that it may register listeners.
+                    </p>
+
+                    <p class="para">
+                        The <span class="classname">ListenerAggregate</span> instance is returned.
+                    </p>
+                </dd>
+
+            </dt>
+
+
+            <dt id="zend.event-manager.event-manager.methods.detach">
+                <dt class="term">detach</dt>
+                <dd>
+
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">detach</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">Zend_Stdlib_CallbackHandler $listener</code_funcparams>
+                         )</span>
+                    </div>
+
+                    <p class="para">
+                        Scans all listeners, and detaches any that match <var class="varname">$listener</var>
+                        so that they will no longer be triggered.
+                    </p>
+
+                    <p class="para">
+                        Returns a boolean <b><tt>true</tt></b> if any listeners have been
+                        identified and unsubscribed, and a boolean <b><tt>false</tt></b>
+                        otherwise.
+                    </p>
+                </dd>
+
+            </dt>
+
+
+            <dt id="zend.event-manager.event-manager.methods.detach-aggregate">
+                <dt class="term">detachAggregate</dt>
+                <dd>
+
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">detachAggregate</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">Zend_EventManager_ListenerAggregate $aggregate</code_funcparams>
+                         )</span>
+                    </div>
+
+                    <p class="para">
+                        Loops through all listeners of all events to identify listeners that are
+                        represented by the aggregate; for all matches, the listeners will be removed.
+
+                    </p>
+
+                    <p class="para">
+                        Returns a boolean <b><tt>true</tt></b> if any listeners have been
+                        identified and unsubscribed, and a boolean <b><tt>false</tt></b>
+                        otherwise.
+                    </p>
+                </dd>
+
+            </dt>
+
+
+            <dt id="zend.event-manager.event-manager.methods.get-events">
+                <dt class="term">detachAggregate</dt>
+                <dd>
+
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">getEvents</span>
+                         ( <span class="methodparam">void</span>
+                    </div>
+
+                    <p class="para">
+                        Returns an array of all event names that have listeners attached.
+                    </p>
+                </dd>
+
+            </dt>
+
+
+            <dt id="zend.event-manager.event-manager.methods.get-listeners">
+                <dt class="term">getListeners</dt>
+                <dd>
+
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">getListeners</span>
+
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $event</code_funcparams>
+                         )</span>
+                    </div>
+
+                    <p class="para">
+                        Returns a <span class="classname">Zend_Stdlib_PriorityQueue</span> instance of all
+                        listeners attached to <var class="varname">$event</var>.
+                    </p>
+                </dd>
+
+            </dt>
+
+
+            <dt id="zend.event-manager.event-manager.methods.clear-listeners">
+                <dt class="term">clearListeners</dt>
+                <dd>
+
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">clearListeners</span>
+
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $event</code_funcparams>
+                         )</span>
+                    </div>
+
+                    <p class="para">
+                        Removes all listeners attached to <var class="varname">$event</var>.
+                    </p>
+                </dd>
+
+            </dt>
+
+
+            <dt id="zend.event-manager.event-manager.methods.prepare-args">
+                <dt class="term">prepareArgs</dt>
+                <dd>
+
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">prepareArgs</span>
+
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">array $args</code_funcparams>
+                         )</span>
+                    </div>
+
+                    <p class="para">
+                        Creates an <span class="classname">ArrayObject</span> from the provided
+                        <var class="varname">$args</var>. This can be useful if you want yours listeners
+                        to be able to modify arguments such that later listeners or the triggering
+                        method can see the changes.
+                    </p>
+                </dd>
+
+            </dt>
+
+        </dl>
+
+    </div>
+ 
+    <div class="section" id="zend.event-manager.event-manager.examples" name="zend.event-manager.event-manager.examples"><div class="info"><h1 class="title">Examples</h1></div>
+        
+ 
+        <div class="example"><div class="info"><p><b>Example #5 Modifying Arguments</b></p></div>
+            
+ 
+            <div class="example-contents"><p>
+                Occasionally it can be useful to allow listeners to modify the arguments they
+                receive so that later listeners or the calling method will receive those changed
+                values.
+            </p></div>
+
+            <div class="example-contents"><p>
+                As an example, you might want to pre-filter a date that you know will arrive as a
+                string and convert it to a <span class="classname">DateTime</span> argument.
+            </p></div>
+
+            <div class="example-contents"><p>
+                To do this, you can pass your arguments to  <span class="methodname">prepareArgs()</span>,
+                and pass this new object when triggering an event. You will then pull that value
+                back into your method.
+            </p></div>
+ 
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #808080; font-style: italic;">// assume a composed event manager</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #ff0000;">'values'</span><span style="color: #ff0000;">'values'</span><span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#91;</span><span style="color: #ff0000;">'date'</span><span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#41;</span> ? <span style="color: #0000ff;">$argv</span><span style="color: #66cc66;">&#91;</span><span style="color: #ff0000;">'values'</span><span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#91;</span><span style="color: #ff0000;">'date'</span><span style="color: #ff0000;">'now'</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #808080; font-style: italic;">// ...</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #ff0000;">'inject'</span><span style="color: #ff0000;">'values'</span><span style="color: #ff0000;">'date'</span><span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#41;</span><span style="color: #66cc66;">&#41;</span> <span style="color: #66cc66;">&#123;</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #0000ff;">$values</span><span style="color: #66cc66;">&#91;</span><span style="color: #ff0000;">'date'</span><span style="color: #ff0000;">'now'</span><span style="color: #ff0000;">'date'</span><span style="color: #ff0000;">'date'</span><span style="color: #ff0000;">'date'</span> =&gt; <span style="color: #ff0000;">'2011-08-10 15:30:29'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#41;</span><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+        </div>
+
+        <div class="example"><div class="info"><p><b>Example #6 Short Circuiting</b></p></div>
+            
+ 
+            <div class="example-contents"><p>
+                One common use case for events is to trigger listeners until either one indicates no
+                further processing should be done, or until a return value meets specific criteria.
+                As examples, if an event creates a Response object, it may want execution to stop.
+            </p></div>
+
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #808080; font-style: italic;">// do some work</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; </div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #808080; font-style: italic;">// Stop propagation and return a response</span></div></li></ol></div></div></div>
+
+
+            <div class="example-contents"><p>
+                Alternately, we could do the check from the method triggering the event.
+            </p></div>
+ 
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #808080; font-style: italic;">// assume composed event manager</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #ff0000;">'request'</span>, <span style="color: #ff0000;">'response'</span</div></li></ol></div></div></div>
+
+
+            <div class="example-contents"><p>
+                Typically, you may want to return a value that stopped execution, or use it some
+                way. Both  <span class="methodname">trigger()</span> and
+                 <span class="methodname">triggerUntil()</span> return a
+                <span class="classname">Zend_EventManager_ResponseCollection</span> instance; call its
+                 <span class="methodname">stopped()</span> method to test if execution was stopped, and
+                 <span class="methodname">last()</span> method to retrieve the return value from the last
+                executed listener:
+            </p></div>
+ 
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #808080; font-style: italic;">// assume composed event manager</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #ff0000;">'request'</span>, <span style="color: #ff0000;">'response'</span><span style="color: #808080; font-style: italic;">// Test if execution was halted, and return last result:</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// continue...</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #66cc66;">&#125;</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#125;</span></div></li></ol></div></div></div>
+
+        </div>
+
+        <div class="example"><div class="info"><p><b>Example #7 Assigning Priority to Listeners</b></p></div>
+            
+ 
+            <div class="example-contents"><p>
+                One use case for the <span class="classname">EventManager</span> is for implementing caching
+                systems. As such, you often want to check the cache early, and save to it late. 
+            </p></div>
+
+            <div class="example-contents"><p>
+                The third argument to  <span class="methodname">attach()</span> is a priority value. The
+                higher this number, the earlier that listener will execute; the lower it is, the
+                later it executes. The value defaults to 1, and values will trigger in the order
+                registered within a given priority.
+            </p></div>
+
+            <div class="example-contents"><p>
+                So, to implement a caching system, our method will need to trigger an event at
+                method start as well as at method end. At method start, we want an event that will
+                trigger early; at method end, an event should trigger late. 
+            </p></div>
+
+            <div class="example-contents"><p>
+                Here is the class in which we want caching:
+            </p></div>
+
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #808080; font-style: italic;">// assume it composes an event manager</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #ff0000;">'id'</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #0000ff;">$results</span> = <span style="color: #0000ff;">$this</span>-&gt;<span style="color: #006600;">events</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>-&gt;<span style="color: #006600;">trigger</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'get.pre'</span>, <span style="color: #0000ff;">$this</span>, <span style="color: #0000ff;">$params</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #808080; font-style: italic;">// If an event stopped propagation, return the value</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// do some work...</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #0000ff;">$params</span><span style="color: #66cc66;">&#91;</span><span style="color: #ff0000;">'__RESULT__'</span><span style="color: #66cc66;">&#93;</span> = <span style="color: #0000ff;">$someComputedContent</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #0000ff;">$this</span>-&gt;<span style="color: #006600;">events</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>-&gt;<span style="color: #006600;">trigger</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'get.post'</span>, <span style="color: #0000ff;">$this</span>, <span style="color: #0000ff;">$params</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #66cc66;">&#125;</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#125;</span></div></li></ol></div></div></div>
+
+
+            <div class="example-contents"><p>
+                Now, let&#039;s create a <span class="interfacename">ListenerAggregate</span> that can handle
+                caching for us:
+            </p></div>
+
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'get.pre'</span><span style="color: #ff0000;">'load'</span><span style="color: #66cc66;">&#41;</span>, <span style="color: #cc66cc;">100</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #0000ff;">$events</span>-&gt;<span style="color: #006600;">attach</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'get.post'</span><span style="color: #ff0000;">'save'</span><span style="color: #ff0000;">'-'</span><span style="color: #ff0000;">'__RESULT__'</span><span style="color: #ff0000;">'__RESULT__'</span><span style="color: #ff0000;">'-'</span</div></li></ol></div></div></div>
+
+
+            <div class="example-contents"><p>
+                We can then attach the aggregate to an instance.
+            </p></div>
+
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li></ol></div></div></div>
+
+
+            <div class="example-contents"><p>
+                Now, as we call  <span class="methodname">get()</span>, if we have a cached entry, it will
+                be returned immediately; if not, a computed entry will be cached when we complete
+                the method.
+            </p></div>
+        </div>
+    </div>
+</div>
+        <hr />
+
+            <table width="100%">
+                <tr>
+                    <td width="25%" style="text-align: left;">
+                    <a href="zend.event-manager.html">Zend_EventManager</a>
+                    </td>
+
+                    <td width="50%" style="text-align: center;">
+                        <div class="up"><span class="up"><a href="zend.event-manager.html">Zend_EventManager</a></span><br />
+                        <span class="home"><a href="manual.html">Programmer's Reference Guide</a></span></div>
+                    </td>
+
+                    <td width="25%" style="text-align: right;">
+                        <div class="next" style="text-align: right; float: right;"><a href="zend.exception.html">Zend_Exception</a></div>
+                    </td>
+                </tr>
+            </table>
+</td>
+        <td style="font-size: smaller;" width="15%"> <style type="text/css">
+#leftbar {
+	float: left;
+	width: 186px;
+	padding: 5px;
+	font-size: smaller;
+}
+ul.toc {
+	margin: 0px 5px 5px 5px;
+	padding: 0px;
+}
+ul.toc li {
+	font-size: 85%;
+	margin: 1px 0 1px 1px;
+	padding: 1px 0 1px 11px;
+	list-style-type: none;
+	background-repeat: no-repeat;
+	background-position: center left;
+}
+ul.toc li.header {
+	font-size: 115%;
+	padding: 5px 0px 5px 11px;
+	border-bottom: 1px solid #cccccc;
+	margin-bottom: 5px;
+}
+ul.toc li.active {
+	font-weight: bold;
+}
+ul.toc li a {
+	text-decoration: none;
+}
+ul.toc li a:hover {
+	text-decoration: underline;
+}
+</style>
+ <ul class="toc">
+  <li class="header home"><a href="manual.html">Programmer's Reference Guide</a></li>
+  <li class="header up"><a href="manual.html">Programmer's Reference Guide</a></li>
+  <li class="header up"><a href="reference.html">Zend Framework Reference</a></li>
+  <li class="header up"><a href="zend.event-manager.html">Zend_EventManager</a></li>
+  <li class="active"><a href="zend.event-manager.event-manager.html">The EventManager</a></li>
+ </ul>
+ </td>
+    </tr>
+</table>
+</body>
+</html>

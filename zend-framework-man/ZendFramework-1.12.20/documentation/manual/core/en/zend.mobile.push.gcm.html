@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <title>Zend_Mobile_Push_Gcm - Zend Framework Manual</title>
+
+</head>
+<body>
+<table width="100%">
+    <tr valign="top">
+        <td width="85%">
+            <table width="100%">
+                <tr>
+                    <td width="25%" style="text-align: left;">
+                    <a href="zend.mobile.push.apns.html">Zend_Mobile_Push_Apns</a>
+                    </td>
+
+                    <td width="50%" style="text-align: center;">
+                        <div class="up"><span class="up"><a href="zend.mobile.push.html">Zend_Mobile_Push</a></span><br />
+                        <span class="home"><a href="manual.html">Programmer's Reference Guide</a></span></div>
+                    </td>
+
+                    <td width="25%" style="text-align: right;">
+                        <div class="next" style="text-align: right; float: right;"><a href="zend.mobile.push.mpns.html">Zend_Mobile_Push_Mpns</a></div>
+                    </td>
+                </tr>
+            </table>
+<hr />
+<div id="zend.mobile.push.gcm" class="section"><div class="info"><h1 class="title">Zend_Mobile_Push_Gcm</h1></div>
+    
+
+    <p class="para">
+        <span class="classname">Zend_Mobile_Push_Gcm</span> provides the ability to
+        send push notifications to Android devices that contain Google Services. 
+        A message will always be constructed with
+        <span class="classname">Zend_Mobile_Push_Message_Gcm</span>.
+    </p>
+
+    <div class="section" id="zend.mobile.push.gcm.server" name="zend.mobile.push.gcm.server"><div class="info"><h1 class="title">Pushing Messages</h1></div>
+        
+
+        <blockquote><p><b class="note">Note</b>: 
+            Prior to pushing and receiving messages; you will need to create a Google
+                API Project and setup your Android app to listen to GCM
+                messages..  If you have not done this, follow the <a href="http://developer.android.com/guide/google/gcm/gs.html" class="link external">&raquo; 
+                GCM: Getting Started</a> document.
+            <br />
+        </p></blockquote>
+
+        <p class="para">
+            When implementing GCM; you have a few components that
+            you will utilize.  <span class="classname">Zend_Mobile_Push_Gcm</span>
+            which contains the server components,
+            <span class="classname">Zend_Mobile_Push_Message_Gcm</span> which contains
+            the message that you would like to send, and
+            <span class="classname">Zend_Mobile_Push_Response_Gcm</span> which contains
+            the response from GCM. Each message sent must do an HTTP request; so
+            remember this when sending in large batches.
+        </p>
+
+        <p class="para">
+            The actual implementation of the code is fairly minimal; however,
+            considerations to error handling must be taken.
+        </p>
+
+        <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'ABCDEF0123456789'</span><span style="color: #ff0000;">'foo'</span> =&gt; <span style="color: #ff0000;">'bar'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #ff0000;">'bar'</span> =&gt; <span style="color: #ff0000;">'foo'</span><span style="color: #ff0000;">'YOUR_API_KEY'</span><span style="color: #808080; font-style: italic;">// exceptions require action or implementation of exponential backoff.</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// handle all errors and registration_id's</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #ff0000;">'registration_id'</span><span style="color: #ff0000;">&quot;%s has a new registration id of: %s<span style="color: #000099; font-weight: bold;">\r</span><span style="color: #000099; font-weight: bold;">\n</span>&quot;</span>, <span style="color: #0000ff;">$k</span>, <span style="color: #0000ff;">$v</span><span style="color: #66cc66;">&#91;</span><span style="color: #ff0000;">'registration_id'</span><span style="color: #ff0000;">'error'</span><span style="color: #ff0000;">&quot;%s had an error of: %s<span style="color: #000099; font-weight: bold;">\r</span><span style="color: #000099; font-weight: bold;">\n</span>&quot;</span>, <span style="color: #0000ff;">$k</span>, <span style="color: #0000ff;">$v</span><span style="color: #66cc66;">&#91;</span><span style="color: #ff0000;">'error'</span><span style="color: #ff0000;">'message_id'</span><span style="color: #ff0000;">&quot;%s was successfully sent the message, message id is: %s&quot;</span>, <span style="color: #0000ff;">$k</span>, <span style="color: #0000ff;">$v</span><span style="color: #66cc66;">&#91;</span><span style="color: #ff0000;">'message_id'</span><span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #66cc66;">&#125;</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#125;</span></div></li></ol></div></div></div>
+
+
+        <table class="doctable table"><div class="info"><caption><b>Exceptions and Remediation Techniques</b></caption></div>
+            
+            
+                <thead valign="middle">
+                    <tr valign="middle">
+                        <th>Exception</th>
+                        <th>Meaning</th>
+                        <th>Handling</th>
+                    </tr>
+
+                </thead>
+
+                <tbody valign="middle" class="tbody">
+                    <tr valign="middle">
+                        <td align="left">Zend_Mobile_Push_Exception</td>
+                        <td align="left">These types of exceptions are more generic in nature
+                        and are thrown either from gcm when there was an unknown exception
+                        or internally on input validation.</td>
+                        <td align="left">Read the message and determine remediation steps.</td>
+                    </tr>
+
+                    <tr valign="middle">
+                        <td align="left">Zend_Mobile_Push_Exception_InvalidAuthToken</td>
+                        <td align="left">Your API key was likely typed in wrong or does
+                        not have rights to the GCM service.</td>
+                        <td align="left">Check your project on the <a href="https://code.google.com/apis/console" class="link external">&raquo; Google APIs Console
+                        page</a>.</td>
+                    </tr>
+
+                    <tr valign="middle">
+                        <td align="left">Zend_Mobile_Push_Exception_ServerUnavailable</td>
+                        <td align="left">This exception means there was either an internal
+                        server error OR that the server denied your request and
+                        you should look at the Retry-After header.</td>
+                        <td align="left">Read the exception message and utilize
+                        Exponential Backoff</td>
+                    </tr>
+
+                    <tr valign="middle">
+                        <td align="left">Zend_Mobile_Push_Exception_InvalidPayload</td>
+                        <td align="left">Generally the payload will not throw an exception
+                        unless the size of the payload is too large or the JSON
+                        is too large.</td>
+                        <td align="left">Check the size of the payload is within the
+                        requirements of GCM, currently it is 4K.</td>
+                    </tr>
+
+                </tbody>
+            
+        </table>
+
+    </div>
+
+    <div class="section" id="zend.mobile.push.gcm.message" name="zend.mobile.push.gcm.message"><div class="info"><h1 class="title">Advanced Messages</h1></div>
+
+        
+
+        <p class="para">
+            GCM provides the ability for sending more advanced messages; for
+            instance the examples above show the most basic implementation of a
+            message.  <span class="classname">Zend_Mobile_Push_Message_Gcm</span>
+            allows you to do far more advanced messaging outlined below.
+        </p>
+
+        <div class="section" id="zend.mobile.push.gcm.message.delay-while-idle" name="zend.mobile.push.gcm.message.delay-while-idle"><div class="info"><h1 class="title">Delay While Idle</h1></div>
+
+            
+
+            <p class="para">
+                If included, indicates that the message should not be sent
+                immediately if the device is idle. The server will wait for the
+                device to become active, and then only the last message for each
+                collapse_key value will be sent.
+            </p>
+
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li></ol></div></div></div>
+
+
+        </div>
+
+        <div class="section" id="zend.mobile.push.gcm.message.ttl" name="zend.mobile.push.gcm.message.ttl"><div class="info"><h1 class="title">Time to Live</h1></div>
+
+            
+
+            <p class="para">
+                You may set the time to live in seconds, by default GCM will
+                save it for 4 weeks.  Additionally if you specify a Time to
+                Live, you must also set an ID (the collapse key).  Generally it
+                is best by using the message data so that you know it is a
+                unique message.
+            </p>
+
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'key'</span>, <span style="color: #ff0000;">'value'</span</div></li></ol></div></div></div>
+
+
+        </div>
+    </div>
+
+    <div class="section" id="zend.mobile.push.gcm.response" name="zend.mobile.push.gcm.response"><div class="info"><h1 class="title">Response</h1></div>
+
+        
+
+        <p class="para">
+            GCM gives a response back that contains detail that needs to be
+            understood.  Most of the time you can just send a message but the
+            server may come back telling you any the message id, any errors and
+            potentially new registration ids.
+        </p>
+
+        <div class="section" id="zend.mobile.push.gcm.response.result" name="zend.mobile.push.gcm.response.result"><div class="info"><h1 class="title">Results</h1></div>
+
+            
+
+            <p class="para">
+                The results are most commonly retrieved by calling the
+                getResults() method.  However, you may prefer to just get
+                certain results by using the getResult() method.  The getResult
+                method utilizes the constants RESULT_* correlating to message
+                id, error or registration id.
+            </p>
+
+            <p class="para">
+                Several utility methods exist to give you a better idea of what
+                happened during your send.  Methods getSuccessCount(),
+                getFailureCount() and getCanonicalCount() let you know how many
+                where successful, how many failures and how many updates to
+                registration ids you have.
+            </p>
+
+        </div>
+    </div>
+</div>
+        <hr />
+
+            <table width="100%">
+                <tr>
+                    <td width="25%" style="text-align: left;">
+                    <a href="zend.mobile.push.apns.html">Zend_Mobile_Push_Apns</a>
+                    </td>
+
+                    <td width="50%" style="text-align: center;">
+                        <div class="up"><span class="up"><a href="zend.mobile.push.html">Zend_Mobile_Push</a></span><br />
+                        <span class="home"><a href="manual.html">Programmer's Reference Guide</a></span></div>
+                    </td>
+
+                    <td width="25%" style="text-align: right;">
+                        <div class="next" style="text-align: right; float: right;"><a href="zend.mobile.push.mpns.html">Zend_Mobile_Push_Mpns</a></div>
+                    </td>
+                </tr>
+            </table>
+</td>
+        <td style="font-size: smaller;" width="15%"> <style type="text/css">
+#leftbar {
+	float: left;
+	width: 186px;
+	padding: 5px;
+	font-size: smaller;
+}
+ul.toc {
+	margin: 0px 5px 5px 5px;
+	padding: 0px;
+}
+ul.toc li {
+	font-size: 85%;
+	margin: 1px 0 1px 1px;
+	padding: 1px 0 1px 11px;
+	list-style-type: none;
+	background-repeat: no-repeat;
+	background-position: center left;
+}
+ul.toc li.header {
+	font-size: 115%;
+	padding: 5px 0px 5px 11px;
+	border-bottom: 1px solid #cccccc;
+	margin-bottom: 5px;
+}
+ul.toc li.active {
+	font-weight: bold;
+}
+ul.toc li a {
+	text-decoration: none;
+}
+ul.toc li a:hover {
+	text-decoration: underline;
+}
+</style>
+ <ul class="toc">
+  <li class="header home"><a href="manual.html">Programmer's Reference Guide</a></li>
+  <li class="header up"><a href="manual.html">Programmer's Reference Guide</a></li>
+  <li class="header up"><a href="reference.html">Zend Framework Reference</a></li>
+  <li class="header up"><a href="zend.mobile.push.html">Zend_Mobile_Push</a></li>
+  <li><a href="zend.mobile.push.introduction.html">Zend_Mobile_Push Introduction</a></li>
+  <li><a href="zend.mobile.push.apns.html">Zend_Mobile_Push_Apns</a></li>
+  <li class="active"><a href="zend.mobile.push.gcm.html">Zend_Mobile_Push_Gcm</a></li>
+  <li><a href="zend.mobile.push.mpns.html">Zend_Mobile_Push_Mpns</a></li>
+ </ul>
+ </td>
+    </tr>
+</table>
+</body>
+</html>

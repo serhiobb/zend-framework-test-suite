@@ -1,0 +1,1171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <title>Zend_Service_Twitter - Zend Framework Manual</title>
+
+</head>
+<body>
+<table width="100%">
+    <tr valign="top">
+        <td width="85%">
+            <table width="100%">
+                <tr>
+                    <td width="25%" style="text-align: left;">
+                    <a href="zend.service.strikeiron.advanced-uses.html">Zend_Service_StrikeIron: Advanced Uses</a>
+                    </td>
+
+                    <td width="50%" style="text-align: center;">
+                        <div class="up"><span class="up"><a href="zend.service.html">Zend_Service</a></span><br />
+                        <span class="home"><a href="manual.html">Programmer's Reference Guide</a></span></div>
+                    </td>
+
+                    <td width="25%" style="text-align: right;">
+                        <div class="next" style="text-align: right; float: right;"><a href="zend.service.windowsazure.html">Zend_Service_WindowsAzure</a></div>
+                    </td>
+                </tr>
+            </table>
+<hr />
+<div id="zend.service.twitter" class="section"><div class="info"><h1 class="title">Zend_Service_Twitter</h1></div>
+    
+
+    <div class="section" id="zend.service.twitter.introduction" name="zend.service.twitter.introduction"><div class="info"><h1 class="title">Introduction</h1></div>
+        
+
+        <p class="para">
+            <span class="classname">Zend_Service_Twitter</span> provides a client for the
+            <a href="https://dev.twitter.com/docs/api/1.1" class="link external">&raquo; Twitter <acronym class="acronym">API</acronym></a>.
+            <span class="classname">Zend_Service_Twitter</span> allows you to query the public timeline. If
+            you provide a username and OAuth details for Twitter, it will allow you to get and update
+            your status, reply to friends, direct message friends, mark tweets as favorite, and
+            much more.
+        </p>
+
+        <p class="para">
+            <span class="classname">Zend_Service_Twitter</span> wraps all web service
+            operations, including OAuth, and all methods return an instance of
+            <span class="classname">Zend_Service_Twitter_Response</span>.
+        </p>
+
+        <p class="para">
+            <span class="classname">Zend_Service_Twitter</span> is broken up into subsections so you can
+            easily identify which type of call is being requested.
+        </p>
+
+        <ul class="itemizedlist">
+            <li class="listitem">
+                <p class="para">
+                    <code class="code">account</code> allows you to check that your account credentials are
+                    valid.
+                </p>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                    <code class="code">application</code> allows you to check your <acronym class="acronym">API</acronym> rate
+                    limit.
+                </p>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                    <code class="code">blocks</code> blocks and unblocks users from following you.
+                </p>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                    <code class="code">directMessages</code> retrieves the authenticated user&#039;s received direct
+                    messages, deletes direct messages, and sends new direct messages.
+                </p>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                    <code class="code">favorites</code> lists, creates, and removes favorite tweets.
+                </p>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                    <code class="code">friendships</code> creates and removes friendships for the
+                    authenticated user.
+                </p>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                    <code class="code">search</code> allows you to search statuses for specific criteria.
+                </p>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                    <code class="code">statuses</code> retrieves the public and user timelines and
+                    shows, updates, destroys, and retrieves replies for the authenticated user.
+                </p>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                    <code class="code">users</code> retrieves friends and followers for the authenticated user
+                    and returns extended information about a passed user.
+                </p>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section" id="zend.service.twitter.authentication" name="zend.service.twitter.authentication"><div class="info"><h1 class="title">Authentication</h1></div>
+        
+
+        <p class="para">
+            With the exception of fetching the public timeline,
+            <span class="classname">Zend_Service_Twitter</span> requires authentication as a valid
+            user. This is achieved using the OAuth authentication protocol. OAuth is
+            the only supported authentication mode for Twitter as of August 2010. The OAuth
+            implementation used by <span class="classname">Zend_Service_Twitter</span> is
+            <span class="classname">Zend_Oauth</span>.
+        </p>
+
+        <div class="example"><div class="info"><p><b>Example #1 Creating the Twitter Class</b></p></div>
+            
+
+            <div class="example-contents"><p>
+                <span class="classname">Zend_Service_Twitter</span> must authorize itself, on behalf of a user, before use with the
+                Twitter API (except for public timeline). This must be accomplished using OAuth since
+                Twitter has disabled it&#039;s basic HTTP authentication as of August 2010.
+            </p></div>
+
+            <div class="example-contents"><p>
+                There are two options to establishing authorization. The first is to implement the
+                workflow of <span class="classname">Zend_Oauth</span> via <span class="classname">Zend_Service_Twitter</span>
+                which proxies to an internal <span class="classname">Zend_Oauth_Consumer</span> object. Please refer to
+                the <span class="classname">Zend_Oauth</span> documentation for a full example of this
+                workflow - you can call all documented <span class="classname">Zend_Oauth_Consumer</span> methods
+                on <span class="classname">Zend_Service_Twitter</span> including constructor options. You may also
+                use <span class="classname">Zend_Oauth</span> directly and only pass the resulting access
+                token into <span class="classname">Zend_Service_Twitter</span>. This is the normal workflow
+                once you have established a reusable access token for a particular Twitter user. The resulting OAuth
+                access token should be stored to a database for future use (otherwise you will need to
+                authorize for every new instance of <span class="classname">Zend_Service_Twitter</span>). Bear in mind
+                that authorization via OAuth results in your user being redirected to Twitter to give their
+                consent to the requested authorization (this is not repeated for stored access tokens). This will
+                require additional work (i.e. redirecting users and hosting a callback URL) over the previous
+                HTTP authentication mechanism where a user just
+                needed to allow applications to store their username and password.
+            </p></div>
+
+            <div class="example-contents"><p>The following example demonstrates setting up <span class="classname">Zend_Service_Twitter</span>
+            which is given an already established OAuth access token. Please refer to the <span class="classname">Zend_Oauth</span>
+            documentation to understand the workflow involved. The access token is a serializable object, so you may
+            store the serialized object to a database, and unserialize it at retrieval time before passing the objects
+            into <span class="classname">Zend_Service_Twitter</span>. The <span class="classname">Zend_Oauth</span> documentation
+            demonstrates the workflow and objects involved.</p></div>
+
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">/**</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;"> * We assume $serializedToken is the serialized token retrieved from a database</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;"> * or even $_SESSION (if following the simple Zend_Oauth documented example)</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;"> */</span><span style="color: #ff0000;">'accessToken'</span> =&gt; <span style="color: #0000ff;">$token</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #ff0000;">'oauth_options'</span><span style="color: #ff0000;">'username'</span> =&gt; <span style="color: #ff0000;">'johndoe'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #66cc66;">&#41;</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#41;</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #808080; font-style: italic;">// verify user's credentials with Twitter</span></div></li></ol></div></div></div>
+
+        </div>
+
+        <blockquote><p><b class="note">Note</b>: 
+            
+                In order to authenticate with Twitter, ALL applications MUST be registered with
+                Twitter in order to receive a Consumer Key and Consumer Secret to be used when
+                authenticating with OAuth. This can not be reused across multiple applications -
+                you must register each new application separately. Twitter access tokens have
+                no expiry date, so storing them to a database is advised (they can, of course,
+                be refreshed simply be repeating the OAuth authorization process). This can only
+                be done while interacting with the user associated with that access token.
+            <br />
+
+            
+                The previous pre-OAuth version of <span class="classname">Zend_Service_Twitter</span>
+                allowed passing in a username as the first parameter rather than within an array.
+                This is no longer supported.
+            <br />
+        </p></blockquote>
+
+        <p class="para">
+            If you have registered an application with Twitter, you can also use the access token
+            and access token secret they provide you in order to setup the OAuth consumer. This can
+            be done as follows:
+        </p>
+
+        <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'access_token'</span><span style="color: #808080; font-style: italic;">// or use &quot;accessToken&quot; as the key; both work</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #ff0000;">'token'</span> =&gt; <span style="color: #ff0000;">'your-access-token'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #ff0000;">'secret'</span> =&gt; <span style="color: #ff0000;">'your-access-token-secret'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #66cc66;">&#41;</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #ff0000;">'oauth_options'</span><span style="color: #808080; font-style: italic;">// or use &quot;oauthOptions&quot; as the key; both work</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #ff0000;">'consumerKey'</span> =&gt; <span style="color: #ff0000;">'your-consumer-key'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #ff0000;">'consumerSecret'</span> =&gt; <span style="color: #ff0000;">'your-consumer-secret'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #66cc66;">&#41;</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#41;</span><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+
+        <p class="para">
+            If desired, you can also specify a specific HTTP client instance to use, or provide
+            configuration for the HTTP client. To provide the HTTP client, use the
+            <var class="varname">http_client</var> or <var class="varname">httpClient</var> key, and provide an
+            instance. To provide HTTP client configuration for setting up an instance, use the key
+            <var class="varname">http_client_options</var> or <var class="varname">httpClientOptions</var>. As a
+            full example:
+        </p>
+
+        <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'access_token'</span><span style="color: #808080; font-style: italic;">// or use &quot;accessToken&quot; as the key; both work</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #ff0000;">'token'</span> =&gt; <span style="color: #ff0000;">'your-access-token'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #ff0000;">'secret'</span> =&gt; <span style="color: #ff0000;">'your-access-token-secret'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #66cc66;">&#41;</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #ff0000;">'oauth_options'</span><span style="color: #808080; font-style: italic;">// or use &quot;oauthOptions&quot; as the key; both work</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #ff0000;">'consumerKey'</span> =&gt; <span style="color: #ff0000;">'your-consumer-key'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #ff0000;">'consumerSecret'</span> =&gt; <span style="color: #ff0000;">'your-consumer-secret'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #66cc66;">&#41;</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #ff0000;">'http_client_options'</span><span style="color: #ff0000;">'adapter'</span> =&gt; <span style="color: #ff0000;">'Zend_Http_Client_Adapter_Curl'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #66cc66;">&#41;</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#41;</span><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+    </div>
+
+    <div class="section" id="zend.service.twitter.account" name="zend.service.twitter.account"><div class="info"><h1 class="title">Account Methods</h1></div>
+        
+
+        <ul class="itemizedlist">
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">verifyCredentials()</span> tests if supplied user
+                    credentials are valid with minimal overhead.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #2 Verifying credentials</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li></ol></div></div></div>
+
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section" id="zend.service.twitter.application" name="zend.service.twitter.application"><div class="info"><h1 class="title">Application Methods</h1></div>
+        
+
+        <ul class="itemizedlist">
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">rateLimitStatus()</span> returns the remaining number of
+                    <acronym class="acronym">API</acronym> requests available to the authenticating user
+                    before the <acronym class="acronym">API</acronym> limit is reached for the current hour.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #3 Rating limit status</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'/statuses/user_timeline'</span><span style="color: #66cc66;">&#125;</span>-&gt;<span style="color: #006600;">remaining</span>;</div></li></ol></div></div></div>
+
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section" id="zend.service.twitter.blocks" name="zend.service.twitter.blocks"><div class="info"><h1 class="title">Block Methods</h1></div>
+        
+
+        <ul class="itemizedlist">
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">create()</span> blocks the user specified in the
+                    <code class="code">id</code> parameter as the authenticating user and destroys a friendship
+                    to the blocked user if one exists. Returns the blocked user when successful.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #4 Blocking a user</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'usertoblock'</span><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+                </div>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">destroy()</span> un-blocks the user specified in the
+                    <code class="code">id</code> parameter for the authenticating user. Returns the un-blocked
+                    user in the requested format when successful.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #5 Removing a block</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'blockeduser'</span><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+                </div>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">ids()</span> returns an array of user identifiers that the
+                    authenticating user is blocking.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #6 Who are you blocking (identifiers only)</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li></ol></div></div></div>
+
+                </div>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">list()</span> returns an array of user objects that the
+                    authenticating user is blocking.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #7 Who are you blocking</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li></ol></div></div></div>
+
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section" id="zend.service.twitter.directmessages" name="zend.service.twitter.directmessages"><div class="info"><h1 class="title">Direct Message Methods</h1></div>
+        
+
+        <ul class="itemizedlist">
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">messages()</span> returns a list of the 20 most recent direct
+                    messages sent to the authenticating user.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #8 Retrieving recent direct messages received</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li></ol></div></div></div>
+
+                </div>
+
+                <p class="para">
+                    The  <span class="methodname">messages()</span> method accepts an array of optional
+                    parameters to modify the query.
+                </p>
+
+                <ul class="itemizedlist">
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">since_id</code> narrows the returned results to just those
+                            statuses after the specified identifier (up to 24 hours old).
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">max_id</code> narrows the returned results to just those
+                            statuses earlier than the specified identifier.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">count</code> specifies the number of statuses to return, up to 200.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">skip_status</code>, when set to boolean true, &quot;t&quot;, or 1 will skip
+                            including a user&#039;s most recent status in the results.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">include_entities</code> controls whether or not entities, which
+                            includes URLs, mentioned users, and hashtags, will be returned.
+                        </p>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">sent()</span> returns a list of the 20 most recent direct
+                    messages sent by the authenticating user.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #9 Retrieving recent direct messages sent</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li></ol></div></div></div>
+
+                </div>
+
+                <p class="para">
+                    The  <span class="methodname">sent()</span> method accepts an array of optional
+                    parameters to modify the query.
+                </p>
+
+                <ul class="itemizedlist">
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">count</code> specifies the number of statuses to return, up to 20.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">page</code> specifies the page of results to return, based on the
+                            <code class="code">count</code> provided.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">since_id</code> narrows the returned results to just those
+                            statuses after the specified identifier (up to 24 hours old).
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">max_id</code> narrows the returned results to just those
+                            statuses earlier than the specified identifier.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">include_entities</code> controls whether or not entities, which
+                            includes URLs, mentioned users, and hashtags, will be returned.
+                        </p>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">new()</span> sends a new direct message to the specified user
+                    from the authenticating user. Requires both the user and text parameters below.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #10 Sending a direct message</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'myfriend'</span>, <span style="color: #ff0000;">'mymessage'</span><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+                </div>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">destroy()</span> destroys the direct message specified in the
+                    required <code class="code">id</code> parameter. The authenticating user must be the
+                    recipient of the specified direct message.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #11 Deleting a direct message</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li></ol></div></div></div>
+
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section" id="zend.service.twitter.favorites" name="zend.service.twitter.favorites"><div class="info"><h1 class="title">Favorites Methods</h1></div>
+        
+
+        <ul class="itemizedlist">
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">list()</span> returns the 20 most recent favorite
+                    statuses for the authenticating user or user specified by the
+                    <code class="code">user_id</code> or <code class="code">screen_name</code> parameter.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #12 Retrieving favorites</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li></ol></div></div></div>
+
+                </div>
+
+                <p class="para">
+                    The  <span class="methodname">list()</span> method accepts an array of optional
+                    parameters to modify the query.
+                </p>
+
+                <ul class="itemizedlist">
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">user_id</code> specifies the ID of the user for whom to return the
+                            timeline.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">screen_name</code> specifies the screen name of the user for
+                            whom to return the timeline.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">since_id</code> narrows the returned results to just those
+                            statuses after the specified identifier (up to 24 hours old).
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">max_id</code> narrows the returned results to just those
+                            statuses earlier than the specified identifier.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">count</code> specifies the number of statuses to return, up to 200.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">include_entities</code> controls whether or not entities, which
+                            includes URLs, mentioned users, and hashtags, will be returned.
+                        </p>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">create()</span> favorites the status specified in the
+                    <code class="code">id</code> parameter as the authenticating user.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #13 Creating a favorite</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li></ol></div></div></div>
+
+                </div>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">destroy()</span> un-favorites the status specified in the
+                    <code class="code">id</code> parameter as the authenticating user.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #14 Deleting favorites</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li></ol></div></div></div>
+
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section" id="zend.service.twitter.friendships" name="zend.service.twitter.friendships"><div class="info"><h1 class="title">Friendship Methods</h1></div>
+        
+
+        <ul class="itemizedlist">
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">create()</span> befriends the user specified in the
+                    <code class="code">id</code> parameter with the authenticating user.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #15 Creating a friend</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'mynewfriend'</span><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+                </div>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">destroy()</span> discontinues friendship with the user
+                    specified in the <code class="code">id</code> parameter and the authenticating user.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #16 Deleting a friend</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'myoldfriend'</span><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section" id="zend.service.twitter.search" name="zend.service.twitter.search"><div class="info"><h1 class="title">Search Methods</h1></div>
+        
+
+        <ul class="itemizedlist">
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">tweets()</span> returns a list of tweets matching the criteria
+                    specified in <var class="varname">$query</var>. By default, 15 will be returned, but
+                    this value may be changed using the <var class="varname">count</var> option.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #17 Searching for tweets</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'#zendframework'</span><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+                </div>
+
+                <p class="para">
+                    The  <span class="methodname">tweets()</span> method accepts an optional second
+                    argument, an array of optional parameters to modify the query.
+                </p>
+
+                <ul class="itemizedlist">
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">since_id</code> narrows the returned results to just those
+                            statuses after the specified identifier (up to 24 hours old).
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">max_id</code> narrows the returned results to just those
+                            statuses earlier than the specified identifier.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">count</code> specifies the number of statuses to return, up to 200.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">include_entities</code> controls whether or not entities, which
+                            includes URLs, mentioned users, and hashtags, will be returned.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">lang</code> indicates which two-letter language code to restrict
+                            results to.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">locale</code> indicates which two-letter language code is being
+                            used in the query.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">geocode</code> can be used to indicate the geographical radius in
+                            which tweets should originate; the string should be in the form
+                            &quot;latitude,longitude,radius&quot;, with &quot;radius&quot; being a unit followed by one
+                            of &quot;mi&quot; or &quot;km&quot;.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">result_type</code> indicates what type of results to retrieve, and
+                            should be one of &quot;mixed,&quot; &quot;recent,&quot; or &quot;popular.&quot;
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">until</code> can be used to specify a the latest date for which to
+                            return tweets.
+                        </p>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section" id="zend.service.twitter.statuses" name="zend.service.twitter.statuses"><div class="info"><h1 class="title">Status Methods</h1></div>
+        
+
+        <ul class="itemizedlist">
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">sample()</span> returns the 20 most recent statuses
+                    from non-protected users with a custom user icon. The public timeline is cached
+                    by Twitter for 60 seconds.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #18 Retrieving public timeline</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li></ol></div></div></div>
+
+                </div>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">homeTimeline()</span> returns the 20 most recent statuses
+                    posted by the authenticating user and that user&#039;s friends.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #19 Retrieving the home timeline</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li></ol></div></div></div>
+
+                </div>
+
+                <p class="para">
+                    The  <span class="methodname">homeTimeline()</span> method accepts an array of
+                    optional parameters to modify the query.
+                </p>
+
+                <ul class="itemizedlist">
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">since_id</code> narrows the returned results to just those
+                            statuses after the specified identifier (up to 24 hours old).
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">max_id</code> narrows the returned results to just those
+                            statuses earlier than the specified identifier.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">count</code> specifies the number of statuses to return, up to 200.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">trim_user</code>, when set to boolean true, &quot;t&quot;, or 1, will list
+                            the author identifier only in embedded user objects in the statuses
+                            returned.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">contributor_details</code>, when set to boolean true, will return
+                            the screen name of any contributors to a status (instead of only the
+                            contributor identifier).
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">include_entities</code> controls whether or not entities, which
+                            includes URLs, mentioned users, and hashtags, will be returned.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">exclude_replies</code> controls whether or not status updates that
+                            are in reply to other statuses will be returned.
+                        </p>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">userTimeline()</span> returns the 20 most recent statuses
+                    posted from the authenticating user.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #20 Retrieving user timeline</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li></ol></div></div></div>
+
+                </div>
+
+                <p class="para">
+                    The  <span class="methodname">userTimeline()</span> method accepts an array of optional
+                    parameters to modify the query.
+                </p>
+
+                <ul class="itemizedlist">
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">user_id</code> specifies the ID of the user for whom to return the
+                            timeline.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">screen_name</code> specifies the screen name of the user for
+                            whom to return the timeline.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">since_id</code> narrows the returned results to just those
+                            statuses after the specified identifier (up to 24 hours old).
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">max_id</code> narrows the returned results to just those
+                            statuses earlier than the specified identifier.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">count</code> specifies the number of statuses to return, up to 200.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">trim_user</code>, when set to boolean true, &quot;t&quot;, or 1, will list
+                            the author identifier only in embedded user objects in the statuses
+                            returned.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">contributor_details</code>, when set to boolean true, will return
+                            the screen name of any contributors to a status (instead of only the
+                            contributor identifier).
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">include_rts</code> controls whether or not to include native
+                            retweets in the returned list.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">exclude_replies</code> controls whether or not status updates that
+                            are in reply to other statuses will be returned.
+                        </p>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">show()</span> returns a single status, specified by the
+                    <code class="code">id</code> parameter below. The status&#039; author will be returned inline.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #21 Showing user status</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li></ol></div></div></div>
+
+                </div>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">update()</span> updates the authenticating user&#039;s status.
+                    This method requires that you pass in the status update that you want to post
+                    to Twitter.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #22 Updating user status</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'My Great Tweet'</span><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+                </div>
+
+                <p class="para">
+                    The  <span class="methodname">update()</span> method accepts a second additional
+                    parameter.
+                </p>
+
+                <ul class="itemizedlist">
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">inReplyToStatusId</code> specifies the ID of an existing
+                            status that the status to be posted is in reply to.
+                        </p>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">mentionsTimeline()</span> returns the 20 most recent @replies
+                    (status updates prefixed with @username) for the authenticating user.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #23 Showing user replies</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li></ol></div></div></div>
+
+                </div>
+
+                <p class="para">
+                    The  <span class="methodname">mentionsTimeline()</span> method accepts an array of
+                    optional parameters to modify the query.
+                </p>
+
+                <ul class="itemizedlist">
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">since_id</code> narrows the returned results to just those
+                            statuses after the specified identifier (up to 24 hours old).
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">max_id</code> narrows the returned results to just those
+                            statuses earlier than the specified identifier.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">count</code> specifies the number of statuses to return, up to 200.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">trim_user</code>, when set to boolean true, &quot;t&quot;, or 1, will list
+                            the author identifier only in embedded user objects in the statuses
+                            returned.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">contributor_details</code>, when set to boolean true, will return
+                            the screen name of any contributors to a status (instead of only the
+                            contributor identifier).
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">include_entities</code> controls whether or not entities, which
+                            includes URLs, mentioned users, and hashtags, will be returned.
+                        </p>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">destroy()</span> destroys the status specified by the
+                    required <code class="code">id</code> parameter.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #24 Deleting user status</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li></ol></div></div></div>
+
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section" id="zend.service.twitter.users" name="zend.service.twitter.users"><div class="info"><h1 class="title">User Methods</h1></div>
+        
+
+        <ul class="itemizedlist">
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">show()</span> returns extended information of a given user,
+                    specified by ID or screen name as per the required <code class="code">id</code>
+                    parameter below.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #25 Showing user informations</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'myfriend'</span><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+                </div>
+            </li>
+
+            <li class="listitem">
+                <p class="para">
+                     <span class="methodname">search()</span> will search for users matching the query
+                    provided.
+                </p>
+
+                <div class="example"><div class="info"><p><b>Example #26 Searching for users</b></p></div>
+                    
+
+                    <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'Zend'</span><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+                </div>
+
+                <p class="para">
+                    The  <span class="methodname">search()</span> method accepts an array of
+                    optional parameters to modify the query.
+                </p>
+
+                <ul class="itemizedlist">
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">count</code> specifies the number of statuses to return, up to 20.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">page</code> specifies the page of results to return, based on the
+                            <code class="code">count</code> provided.
+                        </p>
+                    </li>
+
+                    <li class="listitem">
+                        <p class="para">
+                            <code class="code">include_entities</code> controls whether or not entities, which
+                            includes URLs, mentioned users, and hashtags, will be returned.
+                        </p>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+        <hr />
+
+            <table width="100%">
+                <tr>
+                    <td width="25%" style="text-align: left;">
+                    <a href="zend.service.strikeiron.advanced-uses.html">Zend_Service_StrikeIron: Advanced Uses</a>
+                    </td>
+
+                    <td width="50%" style="text-align: center;">
+                        <div class="up"><span class="up"><a href="zend.service.html">Zend_Service</a></span><br />
+                        <span class="home"><a href="manual.html">Programmer's Reference Guide</a></span></div>
+                    </td>
+
+                    <td width="25%" style="text-align: right;">
+                        <div class="next" style="text-align: right; float: right;"><a href="zend.service.windowsazure.html">Zend_Service_WindowsAzure</a></div>
+                    </td>
+                </tr>
+            </table>
+</td>
+        <td style="font-size: smaller;" width="15%"> <style type="text/css">
+#leftbar {
+	float: left;
+	width: 186px;
+	padding: 5px;
+	font-size: smaller;
+}
+ul.toc {
+	margin: 0px 5px 5px 5px;
+	padding: 0px;
+}
+ul.toc li {
+	font-size: 85%;
+	margin: 1px 0 1px 1px;
+	padding: 1px 0 1px 11px;
+	list-style-type: none;
+	background-repeat: no-repeat;
+	background-position: center left;
+}
+ul.toc li.header {
+	font-size: 115%;
+	padding: 5px 0px 5px 11px;
+	border-bottom: 1px solid #cccccc;
+	margin-bottom: 5px;
+}
+ul.toc li.active {
+	font-weight: bold;
+}
+ul.toc li a {
+	text-decoration: none;
+}
+ul.toc li a:hover {
+	text-decoration: underline;
+}
+</style>
+ <ul class="toc">
+  <li class="header home"><a href="manual.html">Programmer's Reference Guide</a></li>
+  <li class="header up"><a href="manual.html">Programmer's Reference Guide</a></li>
+  <li class="header up"><a href="reference.html">Zend Framework Reference</a></li>
+  <li class="header up"><a href="zend.service.html">Zend_Service</a></li>
+  <li><a href="zend.service.introduction.html">Introduction</a></li>
+  <li><a href="zend.service.akismet.html">Zend_Service_Akismet</a></li>
+  <li><a href="zend.service.amazon.html">Zend_Service_Amazon</a></li>
+  <li><a href="zend.service.amazon.ec2.html">Zend_Service_Amazon_Ec2</a></li>
+  <li><a href="zend.service.amazon.ec2.instance.html">Zend_Service_Amazon_Ec2: Instances</a></li>
+  <li><a href="zend.service.amazon.ec2.windows.instance.html">Zend_Service_Amazon_Ec2: Windows Instances</a></li>
+  <li><a href="zend.service.amazon.ec2.reserved.instance.html">Zend_Service_Amazon_Ec2: Reserved Instances</a></li>
+  <li><a href="zend.service.amazon.ec2.cloudwatch.html">Zend_Service_Amazon_Ec2: CloudWatch Monitoring</a></li>
+  <li><a href="zend.service.amazon.ec2.images.html">Zend_Service_Amazon_Ec2: Amazon Machine Images (AMI)</a></li>
+  <li><a href="zend.service.amazon.ec2.ebs.html">Zend_Service_Amazon_Ec2: Elastic Block Storage (EBS)</a></li>
+  <li><a href="zend.service.amazon.ec2.elasticip.html">Zend_Service_Amazon_Ec2: Elastic IP Addresses</a></li>
+  <li><a href="zend.service.amazon.ec2.keypairs.html">Zend_Service_Amazon_Ec2: Keypairs</a></li>
+  <li><a href="zend.service.amazon.ec2.zones.html">Zend_Service_Amazon_Ec2: Regions and Availability Zones</a></li>
+  <li><a href="zend.service.amazon.ec2.securitygroups.html">Zend_Service_Amazon_Ec2: Security Groups</a></li>
+  <li><a href="zend.service.amazon.s3.html">Zend_Service_Amazon_S3</a></li>
+  <li><a href="zend.service.amazon.sqs.html">Zend_Service_Amazon_Sqs</a></li>
+  <li><a href="zend.service.audioscrobbler.html">Zend_Service_Audioscrobbler</a></li>
+  <li><a href="zend.service.delicious.html">Zend_Service_Delicious</a></li>
+  <li><a href="zend.service.ebay.html">Zend_Service_Ebay</a></li>
+  <li><a href="zend.service.ebay.finding.html">Zend_Service_Ebay_Finding</a></li>
+  <li><a href="zend.service.flickr.html">Zend_Service_Flickr</a></li>
+  <li><a href="zend.service.livedocx.html">Zend_Service_LiveDocx</a></li>
+  <li><a href="zend.service.rackspace.html">Zend_Service_Rackspace</a></li>
+  <li><a href="zend.service.rackspace.files.html">Zend_Service_Rackspace_Files</a></li>
+  <li><a href="zend.service.rackspace.servers.html">Zend_Service_Rackspace_Servers</a></li>
+  <li><a href="zend.service.recaptcha.html">Zend_Service_ReCaptcha</a></li>
+  <li><a href="zend.service.short-url.html">Zend_Service_ShortUrl</a></li>
+  <li><a href="zend.service.slideshare.html">Zend_Service_SlideShare</a></li>
+  <li><a href="zend.service.strikeiron.html">Zend_Service_StrikeIron</a></li>
+  <li><a href="zend.service.strikeiron.bundled-services.html">Zend_Service_StrikeIron: Bundled Services</a></li>
+  <li><a href="zend.service.strikeiron.advanced-uses.html">Zend_Service_StrikeIron: Advanced Uses</a></li>
+  <li class="active"><a href="zend.service.twitter.html">Zend_Service_Twitter</a></li>
+  <li><a href="zend.service.windowsazure.html">Zend_Service_WindowsAzure</a></li>
+  <li><a href="zend.service.windowsazure.storage.blob.html">Zend_Service_WindowsAzure_Storage_Blob</a></li>
+  <li><a href="zend.service.windowsazure.diagnostics.manager.html">Zend_Service_WindowsAzure_Diagnostics_Manager</a></li>
+  <li><a href="zend.service.windowsazure.storage.queue.html">Zend_Service_WindowsAzure_Storage_Queue</a></li>
+  <li><a href="zend.service.windowsazure.storage.table.html">Zend_Service_WindowsAzure_Storage_Table</a></li>
+  <li><a href="zend.service.yahoo.html">Zend_Service_Yahoo</a></li>
+ </ul>
+ </td>
+    </tr>
+</table>
+</body>
+</html>

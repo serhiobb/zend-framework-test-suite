@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="MySQL - zend_framwork@localhost" uuid="46079fb5-a91e-4626-b8c4-44cc5eaf5165">
+      <secret-storage>master_key</secret-storage>
+      <user-name>root</user-name>
+      <schema-pattern>zend_framwork.*</schema-pattern>
+      <default-schemas>zend_framwork.*</default-schemas>
+    </data-source>
+  </component>
+</project>

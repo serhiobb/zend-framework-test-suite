@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <title>Zend_Cloud_Infrastructure_Adapter - Zend Framework Manual</title>
+
+</head>
+<body>
+<table width="100%">
+    <tr valign="top">
+        <td width="85%">
+            <table width="100%">
+                <tr>
+                    <td width="25%" style="text-align: left;">
+                    <a href="zend.cloud.infrastructure.html">Zend_Cloud_Infrastructure</a>
+                    </td>
+
+                    <td width="50%" style="text-align: center;">
+                        <div class="up"><span class="up"><a href="zend.cloud.html">SimpleCloud API: Zend_Cloud</a></span><br />
+                        <span class="home"><a href="manual.html">Programmer's Reference Guide</a></span></div>
+                    </td>
+
+                    <td width="25%" style="text-align: right;">
+                        <div class="next" style="text-align: right; float: right;"><a href="zend.codegenerator.html">Zend_CodeGenerator</a></div>
+                    </td>
+                </tr>
+            </table>
+<hr />
+<div id="zend.cloud.infrastructure.adapter" class="section"><div class="info"><h1 class="title">Zend_Cloud_Infrastructure_Adapter</h1></div>
+    
+
+    <div class="section" id="zend.cloud.infrastructure.adapter.intro" name="zend.cloud.infrastructure.adapter.intro"><div class="info"><h1 class="title">Adapters</h1></div>
+        
+
+        <p class="para">
+            The <span class="classname">Zend_Cloud_Infrastructure</span> supports the following adapters:
+        </p>
+
+        <ul class="itemizedlist">
+            <li class="listitem">
+                <p class="para">
+                    <a href="http://aws.amazon.com/ec2/" class="link external">&raquo; Amazon EC2</a>;
+                </p>
+            </li>  
+
+            <li class="listitem">
+                <p class="para">
+                    <a href="http://www.rackspace.com/cloud/cloud_hosting_products/servers/" class="link external">&raquo; Rackspace Cloud Servers</a>.
+                </p>
+            </li>
+        </ul>    
+    </div>    
+    
+    <div class="section" id="zend.cloud.infrastructure.adapter.ec2" name="zend.cloud.infrastructure.adapter.ec2"><div class="info"><h1 class="title">AMAZON EC2</h1></div>
+        
+
+        <p class="para">
+            To initialize the AMAZON EC2 adapter you have to use the following code:
+        </p>
+        
+         <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'key'</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$secret</span> = <span style="color: #ff0000;">'secret'</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$region</span> = <span style="color: #ff0000;">'region'</span><span style="color: #ff0000;">'Zend_Cloud_Infrastructure_Adapter_Ec2'</span</div></li></ol></div></div></div>
+
+
+        <p class="para">
+            To create a new instance for AMAZON EC2 adapter you have to use the following parameters:
+        </p>
+        
+        <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'imageId'</span>&nbsp; &nbsp; &nbsp; =&gt; <span style="color: #ff0000;">'your-image-id'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #ff0000;">'instanceType'</span> =&gt; <span style="color: #ff0000;">'your-instance-type'</span><span style="color: #ff0000;">'name of the instance'</span><span style="color: #ff0000;">&quot;Name of the instance: %s<span style="color: #000099; font-weight: bold;">\n</span>&quot;</span><span style="color: #ff0000;">&quot;ID of the instance&nbsp; : %s<span style="color: #000099; font-weight: bold;">\n</span>&quot;</span</div></li></ol></div></div></div>
+
+
+        <p class="para">
+            The monitor an instance of AMAZON EC2 you can use the starting time and ending time optional parameters.
+            The times must be specified using the ISO 8601 format.
+        </p>
+        
+        <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'2008-02-26T19:00:00+00:00'</span><span style="color: #ff0000;">'2008-02-26T20:00:00+00:00'</span><span style="color: #ff0000;">'id-instance'</span</div></li></ol></div></div></div>
+
+
+        <p class="para">
+            The <em class="emphasis">instanceType</em> parameter is optional. This parameter specify the
+            type of the instance to create (for instance, &#039;t1.micro&#039;).
+        </p>
+    </div> 
+    
+    <div class="section" id="zend.cloud.infrastructure.adapter.rackspace" name="zend.cloud.infrastructure.adapter.rackspace"><div class="info"><h1 class="title">Rackspace Cloud Servers</h1></div>
+        
+
+        <p class="para">
+            To initialize the Rackspace Cloud Servers adapter you have to use the following code:
+        </p>
+        
+        <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$user</span> = <span style="color: #ff0000;">'username'</span><span style="color: #ff0000;">'API key'</span><span style="color: #ff0000;">'Zend_Cloud_Infrastructure_Adapter_Rackspace'</span</div></li></ol></div></div></div>
+
+
+        <p class="para">
+            To create a new instance for Rackspace Cloud Servers adapter you have to use the
+            following parameters:
+        </p>
+        
+        <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'imageId'</span>&nbsp; =&gt; <span style="color: #ff0000;">'image-id-of-the-instance'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #ff0000;">'flavorId'</span> =&gt; <span style="color: #ff0000;">'flavor-id-of-the-instance'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #ff0000;">'metadata'</span><span style="color: #ff0000;">'foo'</span> =&gt; <span style="color: #ff0000;">'bar'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #66cc66;">&#41;</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #ff0000;">'file'</span><span style="color: #ff0000;">'remote-instance-path'</span> =&gt; <span style="color: #ff0000;">'local-path'</span><span style="color: #ff0000;">'name of the instance'</span><span style="color: #ff0000;">&quot;Name of the instance: %s<span style="color: #000099; font-weight: bold;">\n</span>&quot;</span><span style="color: #ff0000;">&quot;ID of the instance&nbsp; : %s<span style="color: #000099; font-weight: bold;">\n</span>&quot;</span</div></li></ol></div></div></div>
+
+
+        <p class="para">
+            The <em class="emphasis">metadata</em> array and the <em class="emphasis">file</em> array are
+            optional parameters.
+        </p>
+        
+        <p class="para">
+            To monitor an instance of Rackspace Cloud Servers we can use only the SSH2 extension.
+            The Rackspace API does not offer a dedicated service to monitor the instance.  The
+            monitoring features using the SSH2 connection are limited to the CPU usage, the RAM
+            usage and the DISK usage.
+        </p>
+        
+        <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">span style="color: #ff0000;">'username'</span> =&gt; <span style="color: #ff0000;">'your-username'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #ff0000;">'password'</span> =&gt; <span style="color: #ff0000;">'your-password'</span><span style="color: #ff0000;">'id-instance'</span><span style="color: #ff0000;">'id-instance'</span><span style="color: #ff0000;">'id-instance'</span</div></li></ol></div></div></div>
+
+        
+        <p class="para">
+            The <em class="emphasis">$options</em> contains the username and the password to be used for
+            the SSH connection.
+        </p>    
+    </div> 
+</div>
+        <hr />
+
+            <table width="100%">
+                <tr>
+                    <td width="25%" style="text-align: left;">
+                    <a href="zend.cloud.infrastructure.html">Zend_Cloud_Infrastructure</a>
+                    </td>
+
+                    <td width="50%" style="text-align: center;">
+                        <div class="up"><span class="up"><a href="zend.cloud.html">SimpleCloud API: Zend_Cloud</a></span><br />
+                        <span class="home"><a href="manual.html">Programmer's Reference Guide</a></span></div>
+                    </td>
+
+                    <td width="25%" style="text-align: right;">
+                        <div class="next" style="text-align: right; float: right;"><a href="zend.codegenerator.html">Zend_CodeGenerator</a></div>
+                    </td>
+                </tr>
+            </table>
+</td>
+        <td style="font-size: smaller;" width="15%"> <style type="text/css">
+#leftbar {
+	float: left;
+	width: 186px;
+	padding: 5px;
+	font-size: smaller;
+}
+ul.toc {
+	margin: 0px 5px 5px 5px;
+	padding: 0px;
+}
+ul.toc li {
+	font-size: 85%;
+	margin: 1px 0 1px 1px;
+	padding: 1px 0 1px 11px;
+	list-style-type: none;
+	background-repeat: no-repeat;
+	background-position: center left;
+}
+ul.toc li.header {
+	font-size: 115%;
+	padding: 5px 0px 5px 11px;
+	border-bottom: 1px solid #cccccc;
+	margin-bottom: 5px;
+}
+ul.toc li.active {
+	font-weight: bold;
+}
+ul.toc li a {
+	text-decoration: none;
+}
+ul.toc li a:hover {
+	text-decoration: underline;
+}
+</style>
+ <ul class="toc">
+  <li class="header home"><a href="manual.html">Programmer's Reference Guide</a></li>
+  <li class="header up"><a href="manual.html">Programmer's Reference Guide</a></li>
+  <li class="header up"><a href="reference.html">Zend Framework Reference</a></li>
+  <li class="header up"><a href="zend.cloud.html">SimpleCloud API: Zend_Cloud</a></li>
+  <li><a href="zend.cloud.documentservice.html">Document Service Introduction</a></li>
+  <li><a href="zend.cloud.queueservice.html">Queue Service Introduction</a></li>
+  <li><a href="zend.cloud.storageservice.html">StorageService Introduction</a></li>
+  <li><a href="zend.cloud.infrastructure.html">Zend_Cloud_Infrastructure</a></li>
+  <li class="active"><a href="zend.cloud.infrastructure.adapter.html">Zend_Cloud_Infrastructure_Adapter</a></li>
+ </ul>
+ </td>
+    </tr>
+</table>
+</body>
+</html>

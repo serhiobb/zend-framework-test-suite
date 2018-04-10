@@ -1,0 +1,1015 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <title>Zend_Service_Rackspace_Files - Zend Framework Manual</title>
+
+</head>
+<body>
+<table width="100%">
+    <tr valign="top">
+        <td width="85%">
+            <table width="100%">
+                <tr>
+                    <td width="25%" style="text-align: left;">
+                    <a href="zend.service.rackspace.html">Zend_Service_Rackspace</a>
+                    </td>
+
+                    <td width="50%" style="text-align: center;">
+                        <div class="up"><span class="up"><a href="zend.service.html">Zend_Service</a></span><br />
+                        <span class="home"><a href="manual.html">Programmer's Reference Guide</a></span></div>
+                    </td>
+
+                    <td width="25%" style="text-align: right;">
+                        <div class="next" style="text-align: right; float: right;"><a href="zend.service.rackspace.servers.html">Zend_Service_Rackspace_Servers</a></div>
+                    </td>
+                </tr>
+            </table>
+<hr />
+<div id="zend.service.rackspace.files" class="section"><div class="info"><h1 class="title">Zend_Service_Rackspace_Files</h1></div>
+    
+
+    <div class="section" id="zend.service.rackspace.files.intro" name="zend.service.rackspace.files.intro"><div class="info"><h1 class="title">Overview</h1></div>
+        
+
+        <p class="para">
+            The <span class="classname">Zend_Service_Rackspace_Files</span> is a class that provides a
+            simple <acronym class="acronym">API</acronym> to manage the <a href="http://www.rackspace.com/cloud/cloud_hosting_products/files/" class="link external">&raquo; Rackspace
+                Cloud Files</a>.
+        </p>
+    </div>
+
+
+    <div class="section" id="zend.service.rackspace.files.quick-start" name="zend.service.rackspace.files.quick-start"><div class="info"><h1 class="title">Quick Start</h1></div>
+        
+        
+        <p class="para">
+            To use this class you have to pass the username and the API&#039;s key of Rackspace in the
+            construction of the class.
+        </p>
+        
+         <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$user</span> = <span style="color: #ff0000;">'username'</span><span style="color: #ff0000;">'secret key'</span</div></li></ol></div></div></div>
+
+        
+        <p class="para">
+            A container is a storage compartment for your data and provides a way for you to organize
+            your data. You can think of a container as a folder in Windows® or a directory in UNIX®.
+            The primary difference between a container and these other file system concepts is that
+            containers cannot be nested. You can, however, create an unlimited number of containers
+            within your account. Data must be stored in a container so you must have at least one
+            container defined in your account prior to uploading data.
+        </p>
+        
+        <p class="para">
+            The only restrictions on container names is that they cannot contain a forward slash (/)
+            and must be less than 256 bytes in length (please note that the length restriction applies to
+            the name using the URL encoded format).
+        </p>
+        
+        <p class="para">
+            The containers are managed using the class <span class="classname">Zend_Service_Rackspace_Files_Container</span>.
+        </p>
+        
+        <p class="para">
+            An object (file) is the basic storage entity and any optional metadata that represents the files
+            you store in the Cloud Files system. When you upload data to Cloud Files, the data is stored
+            as-is (no compression or encryption) and consists of a location (container), the object&#039;s
+            name, and any metadata consisting of key/value pairs. For instance, you may chose to store
+            a backup of your digital photos and organize them into albums. In this case, each object
+            could be tagged with metadata such as Album : Caribbean Cruise or Album :
+            Aspen Ski Trip.
+        </p>
+        
+        <p class="para">
+            The only restriction on object names is that they must be less than 1024 bytes in length
+            after URL encoding. Cloud Files has a limit on the size of a single uploaded object;
+            by default this is 5 GB. For metadata, you should not exceed 90 individual key/value pairs
+            for any one object and the total byte length of all key/value pairs should not exceed 4KB (4096 bytes).
+        </p>
+        
+        <p class="para">
+            The objects are managed using the class <span class="classname">Zend_Service_Rackspace_Files_Object</span>.
+        </p>
+        
+        <p class="para">
+            To create a new container you can use the <em class="emphasis">createContainer</em> method.
+        </p>
+        
+        <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$container</span>= <span style="color: #0000ff;">$rackspace</span>-&gt;<span style="color: #006600;">createContainer</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'test'</span><span style="color: #ff0000;">'ERROR: '</span><span style="color: #ff0000;">&quot;Name: %s&quot;</span>,<span style="color: #0000ff;">$container</span>-&gt;<span style="color: #006600;">getName</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+
+        <p class="para">
+            This example create a container with name <em class="emphasis">test</em>. The result of <em class="emphasis">createContainer</em>
+            is a new instance of <span class="classname">Zend_Service_Rackspace_Files_Container</span>.
+        </p>
+        
+        <p class="para">
+            To store an object (file) in a container you can use the <em class="emphasis">storeObject</em> method.
+        </p>
+        
+        <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$name</span>= <span style="color: #ff0000;">'example.jpg'</span><span style="color: #ff0000;">'foo'</span> =&gt; <span style="color: #ff0000;">'bar'</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$rackspace</span>-&gt;<span style="color: #006600;">storeObject</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'test'</span><span style="color: #ff0000;">'Object stored successfully'</span><span style="color: #ff0000;">&quot;ERROR: %s&quot;</span>,<span style="color: #0000ff;">$rackspace</span>-&gt;<span style="color: #006600;">getErrorMsg</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#125;</span></div></li></ol></div></div></div>
+
+
+        <p class="para">
+            This example store a file image <em class="emphasis">example.jpg</em> in the container <em class="emphasis">test</em>
+            with the metadata specified in the array <em class="emphasis">$metadata</em>.
+        </p>
+        
+        <p class="para">
+            To delete an object (file) you can use the <em class="emphasis">deleteObject</em> method.
+        </p>
+        
+        <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$rackspace</span>-&gt;<span style="color: #006600;">deleteObject</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'test'</span>,<span style="color: #ff0000;">'example.jpg'</span><span style="color: #ff0000;">'Object deleted successfully'</span><span style="color: #ff0000;">&quot;ERROR: %s&quot;</span>,<span style="color: #0000ff;">$rackspace</span>-&gt;<span style="color: #006600;">getErrorMsg</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#125;</span></div></li></ol></div></div></div>
+
+
+        <p class="para">
+            This example delete the object <em class="emphasis">example.jpg</em> in the container <em class="emphasis">test</em>.
+        </p>
+        
+        <p class="para">
+            To publish a container as <acronym class="acronym">CDN</acronym> (Content Delivery Network) you can use the <em class="emphasis">enableCdnContainer</em> method.
+        </p>
+        
+        <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$cdnInfo</span>= <span style="color: #0000ff;">$rackspace</span>-&gt;<span style="color: #006600;">enableCdnContainer</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'test'</span><span style="color: #ff0000;">&quot;ERROR: %s&quot;</span>,<span style="color: #0000ff;">$rackspace</span>-&gt;<span style="color: #006600;">getErrorMsg</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#125;</span></div></li></ol></div></div></div>
+
+
+        <p class="para">
+            This example publish the container <em class="emphasis">test</em> as <acronym class="acronym">CDN</acronym>.
+            If the operation is successfull returns an associative arrays with the following values:
+        </p>
+
+        <ul class="itemizedlist">
+            <li class="listitem">
+                <p class="para">
+                    <em class="emphasis">cdn_uri</em>, the url of the CDN container;
+                </p>
+            </li>
+            <li class="listitem">
+                <p class="para">
+                    <em class="emphasis">cdn_uri_ssl</em>, the ssl url of the CDN container;
+                </p>
+            </li>            
+        </ul>  
+    </div>
+ 
+    <div class="section" id="zend.service.rackspace.files.methods" name="zend.service.rackspace.files.methods"><div class="info"><h1 class="title">Available Methods</h1></div>
+        
+        
+        <dl>
+
+            <dt id="zend.service.rackspace.files.methods.copy-object">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">copyObject</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $container_source,string $obj_source,string $container_dest,string $obj_dest,$metadata=array(),string $content_type=null</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Copy an object from a container to another. 
+                        The return is <em class="emphasis">true</em> in case of success and <em class="emphasis">false</em> in case of error.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$container_source</em> is the name of the source container.
+                    </p>    
+                    <p class="para">
+                        The <em class="emphasis">$obj_source</em> is the name of the source object.   
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$container_dest</em> is the name of the destination container.   
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$obj_dest</em> is the name of the destination object.   
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$metadata</em> array contains the metadata information related to the destination object.   
+                    </p>    
+                    <p class="para">
+                        The <em class="emphasis">$content_type</em> is the optional content type of the destination object (file).
+                    </p>
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.service.rackspace.files.methods.create-container">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">createContainer</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $container, $metadata=array()</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Create a container. The return is an instance of <span class="classname">Zend_Service_Rackspace_Files_Container</span>.
+                        In case of error the return is <em class="emphasis">false</em>.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$container</em> is the name of the container to create.
+                    </p>    
+                    <p class="para">
+                        The <em class="emphasis">$metadata</em> array contains the metadata information related to the container.   
+                    </p>
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.service.rackspace.files.methods.delete-container">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">deleteContainer</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $container</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Delete a container. The return is <em class="emphasis">true</em> in case of success and <em class="emphasis">false</em> in case of error.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$container</em> is the name of the container to delete.
+                    </p>    
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.service.rackspace.files.methods.delete-object">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">deleteObject</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $container,string $object</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Delete an object in a specific container. Return <em class="emphasis">true</em> in case of success, <em class="emphasis">false</em> in case of error.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$container</em> is the name of the container.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$object</em> is the name of the object to delete.
+                    </p>   
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.service.rackspace.files.methods.enable-cdn-container">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">enableCdnContainer</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $container,integer $ttl=900</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Publish a container as <acronym class="acronym">CDN</acronym> (Content Delivery Network). Return an associative array contains the CDN url and SSL url.
+                        In case of error the return is <em class="emphasis">false</em>.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$container</em> is the name of the container.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$ttl</em> is the time to live for the CDN cache content. The default value is 15 minutes (900 seconds).
+                        The minimum TTL that can be set is 15 minutes (900 seconds); the maximum TTL is
+                        50 years (range of 900 to 1577836800 seconds).
+                    </p>   
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.service.rackspace.files.methods.get-cdn-containers">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">getCdnContainers</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">$options=array()</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Returns all the CDN containers available. The return is an instance of <span class="classname">Zend_Service_Rackspace_Files_ContainerList</span>.
+                        In case of error the return is <em class="emphasis">false</em>.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$options</em> contains the following optional parameters:
+                        <ul class="itemizedlist">
+                            <li class="listitem">
+                                <p class="para">
+                                    <em class="emphasis">limit</em>, for an integer value n, limits the number of results to at most n values.
+                                </p>
+                            </li>
+                            <li class="listitem">
+                                <p class="para">
+                                    <em class="emphasis">marker</em>, given a string value x, return object names greater in value than the specified marker.
+                                </p>
+                            </li>
+                        </ul>    
+                    </p>
+                </dd>
+
+            </dt>
+
+        
+            <dt id="zend.service.rackspace.files.methods.get-containers">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">getContainers</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">$options=array()</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Returns all the containers available. The return is an instance of <span class="classname">Zend_Service_Rackspace_Files_ContainerList</span>
+                        In case of error the return is <em class="emphasis">false</em>.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$options</em> contains the following optional parameters:
+                        <ul class="itemizedlist">
+                            <li class="listitem">
+                                <p class="para">
+                                    <em class="emphasis">limit</em>, for an integer value n, limits the number of results to at most n values.
+                                </p>
+                            </li>
+                            <li class="listitem">
+                                <p class="para">
+                                    <em class="emphasis">marker</em>, given a string value x, return object names greater in value than the specified marker.
+                                </p>
+                            </li>
+                        </ul>    
+                    </p>
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.service.rackspace.files.methods.get-container">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">getContainer</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $container</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Returns the container specified as instance of  <span class="classname">Zend_Service_Rackspace_Files_Container</span>
+                        In case of error the return is <em class="emphasis">false</em>.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$container</em> is the name of the container.
+                    </p>
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.service.rackspace.files.methods.get-count-containers">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">getCountContainers</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams"/>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Return the total count of containers.
+                    </p>
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.service.rackspace.files.methods.get-count-objects">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">getCountObjects</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams"/>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Return the count of objects contained in all the containers.
+                    </p>
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.service.rackspace.files.methods.get-info-cdn-container">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">getInfoCdnContainer</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $container</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Get the information of a CDN container. The result is an associative array with all the CDN information.
+                        In case of error the return is <em class="emphasis">false</em>.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$container</em> is the name of the container.
+                    </p>    
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.service.rackspace.files.methods.get-info-containers">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">getInfoContainers</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams"/>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Get the information about all the containers available.
+                        Return an associative array with the following values:
+                        <ul class="itemizedlist">
+                            <li class="listitem">
+                                <p class="para">
+                                    <em class="emphasis">tot_containers</em>, the total number of containers stored
+                                </p>
+                            </li>
+                            <li class="listitem">
+                                <p class="para">
+                                    <em class="emphasis">size_containers</em>, the total size, in byte, of all the containers.
+                                </p>
+                            </li>
+                            <li class="listitem">
+                                <p class="para">
+                                    <em class="emphasis">tot_objects</em>, the total number of objects (file) stored in all the containers.
+                                </p>
+                            </li>
+                        </ul> 
+                        In case of error the return is <em class="emphasis">false</em>.
+                    </p>
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.service.rackspace.files.methods.get-metadata-container">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">getMetadataContainer</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $container</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Get the metadata information of a container. The result is an associative array with all the metadata keys/values.
+                        In case of error the return is <em class="emphasis">false</em>.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$container</em> is the name of the container.
+                    </p>    
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.service.rackspace.files.methods.get-metadata-object">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">getMetadataObject</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $container, string $object</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Get the metadata information of an object. The result is an associative array with all the metadata keys/values.
+                        In case of error the return is <em class="emphasis">false</em>.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$container</em> is the name of the container.
+                    </p>  
+                    <p class="para">
+                        The <em class="emphasis">$object</em> is the name of the object.
+                    </p>
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.service.rackspace.files.methods.get-objects">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">getObjects</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $container, $options=array()</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Returns all the objects of a container. The return is an instance of <span class="classname">Zend_Service_Rackspace_Files_ObjectList</span>
+                        In case of error the return is <em class="emphasis">false</em>.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$container</em> is the name of the container.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$options</em> contains the following optional parameters:
+                        <ul class="itemizedlist">
+                            <li class="listitem">
+                                <p class="para">
+                                    <em class="emphasis">limit</em>, for an integer value n, limits the number of results
+                                    to at most n values.
+                                </p>
+                            </li>
+                            <li class="listitem">
+                                <p class="para">
+                                    <em class="emphasis">marker</em>, given a string value x, return object names greater
+                                    in value than the specified marker.
+                                </p>
+                            </li>
+                            <li class="listitem">
+                                <p class="para">
+                                    <em class="emphasis">prefix</em>, for a string value x, causes the results to be
+                                    limited to object names beginning with the substring x.
+                                </p>
+                            </li>
+                            <li class="listitem">
+                                <p class="para">
+                                    <em class="emphasis">path</em>, for a string value x, return the object names nested
+                                    in the pseudo path.
+                                </p>
+                            </li>
+                            <li class="listitem">
+                                <p class="para">
+                                    <em class="emphasis">delimiter</em>, for a character c, return all the object names
+                                    nested in the container (without the need for the directory marker objects).
+                                </p>
+                            </li>
+                        </ul>    
+                    </p>
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.service.rackspace.files.methods.get-object">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">getObject</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $container, string $object, $headers=array()</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Returns an object of a container. The return is an instance of <span class="classname">Zend_Service_Rackspace_Files_Object</span>
+                        In case of error the return is <em class="emphasis">false</em>.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$container</em> is the name of the container.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$object</em> is the name of the object.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$headers</em> contains the following optional parameters (See the <a href="http://www.ietf.org/rfc/rfc2616.txt" class="link external">&raquo; RFC-2616</a> for more info):
+                        <ul class="itemizedlist">
+                            <li class="listitem">
+                                <p class="para">
+                                    <em class="emphasis">If-Match</em>, a client that has one or more entities previously
+                                    obtained from the resource can verify that one of those entities is
+                                    current by including a list of their associated entity tags in the
+                                    If-Match header field. 
+                                </p>
+                            </li>
+                            <li class="listitem">
+                                <p class="para">
+                                    <em class="emphasis">If-None-Match</em>, a client that has one or more entities previously
+                                    obtained from the resource can verify that none of those entities is
+                                    current by including a list of their associated entity tags in the
+                                    If-None-Match header field.
+                                </p>
+                            </li>
+                            <li class="listitem">
+                                <p class="para">
+                                    <em class="emphasis">If-Modified-Since</em>, if the requested variant has not been modified
+                                    since the time specified in this field, an entity will not be returned from the server.
+                                </p>
+                            </li>
+                            <li class="listitem">
+                                <p class="para">
+                                    <em class="emphasis">If-Unmodified-Since</em>, if the requested resource has not been modified
+                                    since the time specified in this field, the server SHOULD perform the
+                                    requested operation as if the If-Unmodified-Since header were not present.
+                                </p>
+                            </li>
+                            <li class="listitem">
+                                <p class="para">
+                                    <em class="emphasis">Range</em>, Rackspace supports a sub-set of Range and do not adhere to the full RFC-2616 specification. We support
+                                    specifying OFFSET-LENGTH where either OFFSET or LENGTH can be optional (not both at
+                                    the same time). The following are supported forms of the header:
+                                    <ul class="itemizedlist">
+                                        <li class="listitem">
+                                            <p class="para">
+                                                <em class="emphasis">Range: bytes=-5</em>, last five bytes of the object
+                                            </p>
+                                        </li>
+                                        <li class="listitem">
+                                            <p class="para">
+                                                <em class="emphasis">Range: bytes=10-15</em>, the five bytes after a 10-byte offset
+                                            </p>
+                                        </li>   
+                                        <li class="listitem">
+                                            <p class="para">
+                                                <em class="emphasis">Range: bytes=32-</em>, all data after the first 32 bytes of the object
+                                            </p>
+                                        </li>
+                                    </ul>    
+                                </p>
+                            </li>
+                        </ul>    
+                    </p>
+                </dd>
+
+            </dt>
+
+            
+            <dt id="zend.service.rackspace.files.methods.get-size-containers">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">getSizeContainers</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams"/>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Return the size, in bytes, of all the containers.
+                    </p>
+                </dd>
+
+            </dt>
+
+        
+            <dt id="zend.service.rackspace.files.methods.set-metadata-object">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">setMetadataObject</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $container,string $object, array $metadata</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Update metadata information to the object (all the previous metadata will be deleted). 
+                        Return <em class="emphasis">true</em> in case of success, <em class="emphasis">false</em> in case of error.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$container</em> is the name of the container.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$object</em> is the name of the object to store.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$metadata</em> array contains the metadata information related to the object.   
+                    </p>    
+                </dd>
+
+            </dt>
+
+        
+            <dt id="zend.service.rackspace.files.methods.store-object">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">storeObject</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $container,string $object,string $file,$metadata=array()</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Store an object in a specific container. Return <em class="emphasis">true</em> in case of success, <em class="emphasis">false</em> in case of error.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$container</em> is the name of the container.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$object</em> is the name of the object to store.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$file</em> is the content of the object to store.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$metadata</em> array contains the metadata information related to the object to store.   
+                    </p>    
+                </dd>
+
+            </dt>
+
+            
+             <dt id="zend.service.rackspace.files.methods.update-cdn-container">
+                <dt class="term">
+                    <div class="methodsynopsis dc-description">
+                         <span class="methodname">updateCdnContainer</span>
+                        <span class="methodparam">( 
+                            <code_funcparams class="funcparams">string $container,integer $ttl=null,$cdn_enabled=null,$log=null</code_funcparams>
+                         )</span>
+                    </div>
+
+                </dt>
+                
+                <dd>
+
+                    <p class="para">
+                        Update the attribute of a <acronym class="acronym">CDN</acronym> container. Return an associative array contains the CDN url and SSL url.
+                        In case of error the return is <em class="emphasis">false</em>.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$container</em> is the name of the container.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$ttl</em> is the time to live for the CDN cache content. The default value is 15 minutes (900 seconds).
+                        The minimum TTL that can be set is 15 minutes (900 seconds); the maximum TTL is
+                        50 years (range of 900 to 1577836800 seconds).
+                    </p>   
+                    <p class="para">
+                        The <em class="emphasis">$cdn_enabled</em> is the flag to swith on/off the CDN. <em class="emphasis">True</em> switch on, <em class="emphasis">false</em> switch off.
+                    </p>
+                    <p class="para">
+                        The <em class="emphasis">$log</em> enable or disable the log retention. <em class="emphasis">True</em> switch on, <em class="emphasis">false</em> switch off.
+                    </p>
+                </dd>
+
+            </dt>
+
+        </dl>
+
+    </div>
+ 
+    <div class="section" id="zend.service.rackspace.files.examples" name="zend.service.rackspace.files.examples"><div class="info"><h1 class="title">Examples</h1></div>
+        
+        
+        <div class="example"><div class="info"><p><b>Example #1 Authenticate</b></p></div>
+            
+ 
+            <div class="example-contents"><p>Check if the username and the key are valid for the Rackspace authentication.</p></div>
+ 
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$user</span> = <span style="color: #ff0000;">'username'</span><span style="color: #ff0000;">'secret key'</span><span style="color: #ff0000;">&quot;Authenticated with token: %s&quot;</span><span style="color: #ff0000;">&quot;ERROR: %s&quot;</span>,<span style="color: #0000ff;">$rackspace</span>-&gt;<span style="color: #006600;">getErrorMsg</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#125;</span></div></li></ol></div></div></div>
+
+        </div>
+        
+        <div class="example"><div class="info"><p><b>Example #2 Get an object</b></p></div>
+            
+            
+            <div class="example-contents"><p>Get an image file (<em class="emphasis">example.gif</em>) from the cloud and render it in the browser</p></div>
+ 
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$user</span> = <span style="color: #ff0000;">'username'</span><span style="color: #ff0000;">'secret key'</span><span style="color: #ff0000;">'test'</span>,<span style="color: #ff0000;">'example.gif'</span><span style="color: #ff0000;">'ERROR: '</span><span style="color: #ff0000;">'Content-type: image/gif'</span</div></li></ol></div></div></div>
+
+        </div>
+        
+        <div class="example"><div class="info"><p><b>Example #3 Create a container with metadata</b></p></div>
+            
+ 
+            <div class="example-contents"><p>Create a container (<em class="emphasis">test</em>) with some metadata information (<em class="emphasis">$metadata</em>)</p></div>
+ 
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$user</span> = <span style="color: #ff0000;">'username'</span><span style="color: #ff0000;">'secret key'</span><span style="color: #ff0000;">'foo'</span>&nbsp; =&gt; <span style="color: #ff0000;">'bar'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #ff0000;">'foo2'</span> =&gt; <span style="color: #ff0000;">'bar2'</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#41;</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$container</span>= <span style="color: #0000ff;">$rackspace</span>-&gt;<span style="color: #006600;">createContainer</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'test'</span><span style="color: #ff0000;">'Container created successfully'</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#125;</span></div></li></ol></div></div></div>
+
+        </div>
+        
+        <div class="example"><div class="info"><p><b>Example #4 Get the metadata of a container</b></p></div>
+            
+            
+            <div class="example-contents"><p>Get the metadata of the container <em class="emphasis">test</em></p></div>
+ 
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$user</span> = <span style="color: #ff0000;">'username'</span><span style="color: #ff0000;">'secret key'</span><span style="color: #ff0000;">'test'</span><span style="color: #ff0000;">'ERROR: '</span</div></li></ol></div></div></div>
+
+        </div>
+        
+        <div class="example"><div class="info"><p><b>Example #5 Store an object in a container</b></p></div>
+            
+ 
+            <div class="example-contents"><p>Store an object using a <span class="classname">Zend_Service_Rackspace_Files_Container</span> instance</p></div>
+ 
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$user</span> = <span style="color: #ff0000;">'username'</span><span style="color: #ff0000;">'secret key'</span><span style="color: #ff0000;">'test'</span><span style="color: #ff0000;">'ERROR: '</span><span style="color: #ff0000;">'test.jpg'</span><span style="color: #ff0000;">'foo'</span> =&gt; <span style="color: #ff0000;">'bar'</span><span style="color: #ff0000;">'test.jpg'</span><span style="color: #ff0000;">'Object stored successfully'</span>;</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#125;</span></div></li></ol></div></div></div>
+
+        </div>
+        
+        <div class="example"><div class="info"><p><b>Example #6 Check if a container is CDN enabled</b></p></div>
+            
+ 
+            <div class="example-contents"><p>Check if the <em class="emphasis">test</em> container is CDN enabled. If it is not we enable it.</p></div>
+ 
+            <div class="programlisting php"><div class="phpcode"><div class="php" style="font-family: monospace;"><ol><li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #0000ff;">$user</span> = <span style="color: #ff0000;">'username'</span><span style="color: #ff0000;">'secret key'</span><span style="color: #ff0000;">'test'</span><span style="color: #ff0000;">'ERROR: '</span><span style="color: #ff0000;">'ERROR: '</span><span style="color: #ff0000;">&quot;The container is CDN enabled with the following URLs:<span style="color: #000099; font-weight: bold;">\n</span> %s<span style="color: #000099; font-weight: bold;">\n</span> %s<span style="color: #000099; font-weight: bold;">\n</span>&quot;</span>,</div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #0000ff;">$container</span>-&gt;<span style="color: #006600;">getCdnUri</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>, </div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #0000ff;">$container</span>-&gt;<span style="color: #006600;">getCdnUriSsl</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span></div></li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;"><div style="font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #66cc66;">&#41;</span>;</div></li></ol></div></div></div>
+
+        </div>
+    </div>
+</div>
+        <hr />
+
+            <table width="100%">
+                <tr>
+                    <td width="25%" style="text-align: left;">
+                    <a href="zend.service.rackspace.html">Zend_Service_Rackspace</a>
+                    </td>
+
+                    <td width="50%" style="text-align: center;">
+                        <div class="up"><span class="up"><a href="zend.service.html">Zend_Service</a></span><br />
+                        <span class="home"><a href="manual.html">Programmer's Reference Guide</a></span></div>
+                    </td>
+
+                    <td width="25%" style="text-align: right;">
+                        <div class="next" style="text-align: right; float: right;"><a href="zend.service.rackspace.servers.html">Zend_Service_Rackspace_Servers</a></div>
+                    </td>
+                </tr>
+            </table>
+</td>
+        <td style="font-size: smaller;" width="15%"> <style type="text/css">
+#leftbar {
+	float: left;
+	width: 186px;
+	padding: 5px;
+	font-size: smaller;
+}
+ul.toc {
+	margin: 0px 5px 5px 5px;
+	padding: 0px;
+}
+ul.toc li {
+	font-size: 85%;
+	margin: 1px 0 1px 1px;
+	padding: 1px 0 1px 11px;
+	list-style-type: none;
+	background-repeat: no-repeat;
+	background-position: center left;
+}
+ul.toc li.header {
+	font-size: 115%;
+	padding: 5px 0px 5px 11px;
+	border-bottom: 1px solid #cccccc;
+	margin-bottom: 5px;
+}
+ul.toc li.active {
+	font-weight: bold;
+}
+ul.toc li a {
+	text-decoration: none;
+}
+ul.toc li a:hover {
+	text-decoration: underline;
+}
+</style>
+ <ul class="toc">
+  <li class="header home"><a href="manual.html">Programmer's Reference Guide</a></li>
+  <li class="header up"><a href="manual.html">Programmer's Reference Guide</a></li>
+  <li class="header up"><a href="reference.html">Zend Framework Reference</a></li>
+  <li class="header up"><a href="zend.service.html">Zend_Service</a></li>
+  <li><a href="zend.service.introduction.html">Introduction</a></li>
+  <li><a href="zend.service.akismet.html">Zend_Service_Akismet</a></li>
+  <li><a href="zend.service.amazon.html">Zend_Service_Amazon</a></li>
+  <li><a href="zend.service.amazon.ec2.html">Zend_Service_Amazon_Ec2</a></li>
+  <li><a href="zend.service.amazon.ec2.instance.html">Zend_Service_Amazon_Ec2: Instances</a></li>
+  <li><a href="zend.service.amazon.ec2.windows.instance.html">Zend_Service_Amazon_Ec2: Windows Instances</a></li>
+  <li><a href="zend.service.amazon.ec2.reserved.instance.html">Zend_Service_Amazon_Ec2: Reserved Instances</a></li>
+  <li><a href="zend.service.amazon.ec2.cloudwatch.html">Zend_Service_Amazon_Ec2: CloudWatch Monitoring</a></li>
+  <li><a href="zend.service.amazon.ec2.images.html">Zend_Service_Amazon_Ec2: Amazon Machine Images (AMI)</a></li>
+  <li><a href="zend.service.amazon.ec2.ebs.html">Zend_Service_Amazon_Ec2: Elastic Block Storage (EBS)</a></li>
+  <li><a href="zend.service.amazon.ec2.elasticip.html">Zend_Service_Amazon_Ec2: Elastic IP Addresses</a></li>
+  <li><a href="zend.service.amazon.ec2.keypairs.html">Zend_Service_Amazon_Ec2: Keypairs</a></li>
+  <li><a href="zend.service.amazon.ec2.zones.html">Zend_Service_Amazon_Ec2: Regions and Availability Zones</a></li>
+  <li><a href="zend.service.amazon.ec2.securitygroups.html">Zend_Service_Amazon_Ec2: Security Groups</a></li>
+  <li><a href="zend.service.amazon.s3.html">Zend_Service_Amazon_S3</a></li>
+  <li><a href="zend.service.amazon.sqs.html">Zend_Service_Amazon_Sqs</a></li>
+  <li><a href="zend.service.audioscrobbler.html">Zend_Service_Audioscrobbler</a></li>
+  <li><a href="zend.service.delicious.html">Zend_Service_Delicious</a></li>
+  <li><a href="zend.service.ebay.html">Zend_Service_Ebay</a></li>
+  <li><a href="zend.service.ebay.finding.html">Zend_Service_Ebay_Finding</a></li>
+  <li><a href="zend.service.flickr.html">Zend_Service_Flickr</a></li>
+  <li><a href="zend.service.livedocx.html">Zend_Service_LiveDocx</a></li>
+  <li><a href="zend.service.rackspace.html">Zend_Service_Rackspace</a></li>
+  <li class="active"><a href="zend.service.rackspace.files.html">Zend_Service_Rackspace_Files</a></li>
+  <li><a href="zend.service.rackspace.servers.html">Zend_Service_Rackspace_Servers</a></li>
+  <li><a href="zend.service.recaptcha.html">Zend_Service_ReCaptcha</a></li>
+  <li><a href="zend.service.short-url.html">Zend_Service_ShortUrl</a></li>
+  <li><a href="zend.service.slideshare.html">Zend_Service_SlideShare</a></li>
+  <li><a href="zend.service.strikeiron.html">Zend_Service_StrikeIron</a></li>
+  <li><a href="zend.service.strikeiron.bundled-services.html">Zend_Service_StrikeIron: Bundled Services</a></li>
+  <li><a href="zend.service.strikeiron.advanced-uses.html">Zend_Service_StrikeIron: Advanced Uses</a></li>
+  <li><a href="zend.service.twitter.html">Zend_Service_Twitter</a></li>
+  <li><a href="zend.service.windowsazure.html">Zend_Service_WindowsAzure</a></li>
+  <li><a href="zend.service.windowsazure.storage.blob.html">Zend_Service_WindowsAzure_Storage_Blob</a></li>
+  <li><a href="zend.service.windowsazure.diagnostics.manager.html">Zend_Service_WindowsAzure_Diagnostics_Manager</a></li>
+  <li><a href="zend.service.windowsazure.storage.queue.html">Zend_Service_WindowsAzure_Storage_Queue</a></li>
+  <li><a href="zend.service.windowsazure.storage.table.html">Zend_Service_WindowsAzure_Storage_Table</a></li>
+  <li><a href="zend.service.yahoo.html">Zend_Service_Yahoo</a></li>
+ </ul>
+ </td>
+    </tr>
+</table>
+</body>
+</html>
