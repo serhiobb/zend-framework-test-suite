@@ -1,26 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/zend-framework/vendor/composer" />
+      <excludeFolder url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/dbunit" />
+      <excludeFolder url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/php-code-coverage" />
+      <excludeFolder url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/php-file-iterator" />
+      <excludeFolder url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/php-text-template" />
+      <excludeFolder url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/php-timer" />
+      <excludeFolder url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/php-token-stream" />
+      <excludeFolder url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/phpunit" />
+      <excludeFolder url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/phpunit-mock-objects" />
+      <excludeFolder url="file://$MODULE_DIR$/zend-framework/vendor/symfony/yaml" />
+    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
       <library name="PHARS">
         <CLASSES>
-          <root url="phar://$MODULE_DIR$/zend-framework/tests/Zend/Loader/_files/Zend_LoaderTest.phar/" />
-          <root url="phar://$MODULE_DIR$/zf-project2/library/Zend/Service/WindowsAzure/CommandLine/Scaffolders/DefaultScaffolder.phar/" />
           <root url="phar://$MODULE_DIR$/zend-framework/tests/Zend/Loader/_files/classmap.phar/" />
-          <root url="phar://$MODULE_DIR$/zf-project2/tests/Zend/Loader/_files/Zend_LoaderTest.phar/" />
           <root url="phar://$MODULE_DIR$/zend-framework/library/Zend/Service/WindowsAzure/CommandLine/Scaffolders/DefaultScaffolder.phar/" />
-          <root url="phar://$MODULE_DIR$/zf-project2/tests/Zend/Loader/_files/classmap.phar/" />
+          <root url="phar://$MODULE_DIR$/zend-framework/tests/Zend/Loader/_files/Zend_LoaderTest.phar/" />
         </CLASSES>
         <SOURCES>
-          <root url="phar://$MODULE_DIR$/zend-framework/tests/Zend/Loader/_files/Zend_LoaderTest.phar/" />
-          <root url="phar://$MODULE_DIR$/zf-project2/library/Zend/Service/WindowsAzure/CommandLine/Scaffolders/DefaultScaffolder.phar/" />
           <root url="phar://$MODULE_DIR$/zend-framework/tests/Zend/Loader/_files/classmap.phar/" />
-          <root url="phar://$MODULE_DIR$/zf-project2/tests/Zend/Loader/_files/Zend_LoaderTest.phar/" />
           <root url="phar://$MODULE_DIR$/zend-framework/library/Zend/Service/WindowsAzure/CommandLine/Scaffolders/DefaultScaffolder.phar/" />
-          <root url="phar://$MODULE_DIR$/zf-project2/tests/Zend/Loader/_files/classmap.phar/" />
+          <root url="phar://$MODULE_DIR$/zend-framework/tests/Zend/Loader/_files/Zend_LoaderTest.phar/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="PHP">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/composer" />
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/dbunit" />
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/php-code-coverage" />
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/php-file-iterator" />
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/php-text-template" />
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/php-timer" />
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/php-token-stream" />
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/phpunit" />
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/phpunit-mock-objects" />
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/symfony/yaml" />
+        </CLASSES>
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/composer" />
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/dbunit" />
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/php-code-coverage" />
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/php-file-iterator" />
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/php-text-template" />
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/php-timer" />
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/php-token-stream" />
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/phpunit" />
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/phpunit/phpunit-mock-objects" />
+          <root url="file://$MODULE_DIR$/zend-framework/vendor/symfony/yaml" />
         </SOURCES>
       </library>
     </orderEntry>
