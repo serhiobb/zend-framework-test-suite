@@ -1,6 +1,6 @@
 <?php
 
-class DeliveryController extends Zend_Controller_Action
+class App_DeliveryController extends Zend_Controller_Action
 {
     public function init()
     {

@@ -1,6 +1,6 @@
 <?php
 
-class FileController extends Zend_Controller_Action
+class App_FileController extends Zend_Controller_Action
 {
     public function init()
     {

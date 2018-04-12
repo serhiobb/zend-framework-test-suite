@@ -1,6 +1,6 @@
 <?php
 
-class Delivery_View extends Zend_View_Abstract
+class App_Delivery_View extends Zend_View_Abstract
 {
     /**
      * Path stack for script, helper, and filter directories.

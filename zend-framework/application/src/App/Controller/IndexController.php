@@ -1,10 +1,15 @@
 <?php
 
-class IndexController extends FrontController
+class App_IndexController extends Zend_Controller_Action
 {
-    public function indexAction()
+    public function init()
     {
         parent::init();
+    }
+
+    public function indexAction()
+    {
+
     }
 
     public function shopAction()
